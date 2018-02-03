@@ -43,10 +43,10 @@ class cgame:
                          ('s', '(current) score and game status'),
                          ('?', 'print help')]
 
-        self.conn = sqlite3.connect('CarcassonneScore.db')
+        self.conn = _sqlite3.connect('CarcassonneScore.db')
         self.cur = self.conn.cursor()
 
-        setupGame()
+        self.setupGame()
 
 
     def showCommands(self):
@@ -73,23 +73,12 @@ class cgame:
         # insert this into the database
 
         # get players for this game
-        dbplayers = getPlayers()
-        for dbplayer in dbplayers:
-            print("{0:d}) ".format(dbplayer[0]) + dbplayer[1])
-        playerinput = input("Please list the IDs for the players in this game (in order of play): ")
-        playerIDs = [int(x) for x in playerinput.split()]
-
-        self.players = []
-        for playerID in playerIDs:
-            for dbplayer in dbplayers:
-                if playerID == dbplayer[0]:
-                    self.players.append((playerID, dbplayer[1]))
-
+        self.getPlayers()
         # general information
-        self.gameID =
+        self.gameID = 0
 
         # get expansions used for this game
-        getExpansions()
+        self.getExpansions()
 
         # game state information
         self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
@@ -102,13 +91,28 @@ class cgame:
         Get a list of possible players from the database
         """
 
-        players = self.cur.execute('''SELECT * FROM players''').fetchall()
+        self.players = []
 
-        if not len(players):
+        dbplayers = self.cur.execute('''SELECT * FROM players''').fetchall()
+
+        if len(dbplayers):
+            for dbplayer in dbplayers:
+                print("{0:d}) ".format(dbplayer[0]) + dbplayer[1])
+            playerinput = input("Please list the IDs for the players in this game (in order of play): ")
+            playerIDs = [int(x) for x in playerinput.split()]
+
+            for playerID in playerIDs:
+                matched = False
+                for dbplayer in dbplayers:
+                    if playerID == dbplayer[0]:
+                        self.players.append((playerID, dbplayer[1]))
+                        matched = True
+                        continue
+                if not matched:
+                    _sys.stderr.write("Error: player ID {0:d} does not match an option from the list.\n".format(playerID))
+        else:
             _sys.stderr.write("Error: players table empty. Exiting.\n")
             _sys.exit(-1)
-
-        return players
 
 
     def getExpansions(self):
@@ -123,15 +127,15 @@ class cgame:
                 exptype = "mini"
             else:
                 exptype = "large"
-            expans = self.cur.execute('''SELECT expansionID,name FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
+            dbexpans = self.cur.execute('''SELECT expansionID,name FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
 
-            if len(expans):
-                for dbexpan in dbexpan:
+            if len(dbexpans):
+                for dbexpan in dbexpans:
                     print("{0:d}) ".format(dbexpan[0]) + dbexpan[1])
                 expaninput = input("Please list the numbers for the " + exptype + " used in this game: ")
-                expanIDs = [int(x) for x in expanplayer.input.split()]
-                for expanID in expanID:
-                    for dbexpan in dbexpan:
+                expanIDs = [int(x) for x in expaninput.split()]
+                for expanID in expanIDs:
+                    for dbexpan in dbexpans:
                         if expanID == dbexpan[0]:
                             self.expansionIDs.append(expanID)
             else:
@@ -156,7 +160,7 @@ class cgame:
         # if the builder was used
         BUILDERUSED = True
 
-        advanceTurn(cmdtime, gameID, playerID, nturn, builder=BUILDERUSED)
+        advanceTurn(builder=BUILDERUSED)
 
         return 0
 
@@ -166,7 +170,7 @@ class cgame:
         Make a new entry in the turns table
         """
 
-        command = '''INSERT INTO turns VALUES ({0:d}, {1:d}, '''.format(self.gameID, self.nturn)
+        command = '''INSERT INTO turns VALUES ({0:d}, {1:d}, '''.format(self.gameID, self.ntile)
         command = command + cmdtime
         if builder:
             bID = 1
@@ -174,12 +178,12 @@ class cgame:
             bID = 0
 
         # compute playerID based on the turn number minus nbuilders / number of players
-        playerID = playerIDs[(nturns - nbuilder) / lnen(playerIDs)]
+        playerID = playerIDs[(self.ntile- self.nbuilder) / len(playerIDs)]
         command = command + ', {0:d}, {1:d})'.format(bID, playerID)
 
         c.execute(command)
 
-        self.nturn += 1
+        self.ntile += 1
         if builder:
             self.nbuilder += 1
 
@@ -199,11 +203,11 @@ class cgame:
             if self.state:
                 prompt = "postgame > "
             else:
-                prompt = "round: {0:d}, turn: {1:d} > ".format(1 + _np.floor((self.nturn-self.nbuilder) / len(self.playerIDs)),
-                                                               self.nturn-self.nbuilder)
+                prompt = "round: {0:d}, turn: {1:d} > ".format(int(1 + _np.floor((self.ntile-self.nbuilder) / len(self.players))),
+                                                               self.ntile-self.nbuilder)
 
             try:
-                text = input(prompt)
+                cmd = input(prompt)
             except (EOFError, KeyboardInterrupt):
                 _sys.stderr.write('Improper input. Please retry\n')
                 showCommands()
@@ -220,7 +224,7 @@ class cgame:
                 advanceTurn(builder=False)
             elif _re.match('b', cmd, _re.IGNORECASE):
                 advanceTurn(builder=True)
-            elif _re.match('?'. cmd, _re.IGNORECASE):
+            elif _re.match('?', cmd, _re.IGNORECASE):
                 showCommands()
             else:
                 _sys.stderr.write('Command not understood. Please try again.\n')
@@ -256,4 +260,4 @@ class cgame:
 
         print("{0:d} tiles played out of {1:d} total ({2:d} remaining).".format(self.ntiles,
                                                                                 self.totaltiles,
-                                                                                self.totaltiles - self.ntiles)
+                                                                                self.totaltiles - self.ntiles))
