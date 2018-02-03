@@ -35,8 +35,7 @@ class cgame:
         Initialize some variables and set up a game
         """
 
-        self.commands = [('n', 'next round'),
-                         ('r', 'record score and advance turn'),
+        self.commands = [('r', 'record score and advance turn'),
                          ('t', 'advance turn, no score'),
                          ('b', 'additional turn for a player due to a builder'),
                          ('e', 'end game (or play if already in postgame scoring'),
