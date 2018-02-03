@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import re as _re
 import sys as _sys
 from datetime import datetime as _datetime
+import sqlite3 as _sqlite3
 import numpy as _np
 
 
@@ -41,6 +42,10 @@ class cgame:
                          ('e', 'end game (or play if already in postgame scoring'),
                          ('s', '(current) score and game status'),
                          ('?', 'print help')]
+
+        self.conn = sqlite3.connect('CarcassonneScore.db')
+        self.cur = self.conn.cursor()
+
         setupGame()
 
 
@@ -67,16 +72,40 @@ class cgame:
 
         # insert this into the database
 
+        dbplayers = getPlayers()
+        for dbplayer in dbplayers:
+            print("{0:d}) ".format(dbplayer[0]) + dbplayer[1])
+        playerinput = input("Please list the IDs for the players in this game (in order of play): ")
+        playerIDs = [int(x) for x in player.input.split()]
+
+        self.players = []
+        for playerID in playerIDs:
+            for dbplayer in dbplayers:
+                if playerID == dbplayer[0]:
+                    self.players.append((playerID, dbplayer[1]))
+
         # general information
         self.gameID =
-        # array of tuples with playerID and name from DB
-        self.players =
         self.expansionIDs =
 
         # game state information
         self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
         self.ntile = 1  # number of tiles played
         self.nbuilder = 0   # number of tiles placed due to builders
+
+
+    def getPlayers(self):
+        """
+        Get a list of possible players from the database
+        """
+
+        players = self.cur.execute('''SELECT * FROM players''').fetchall()
+
+        if not len(players):
+            _sys.stderr.write("Error: players table empty. Exiting.\n")
+            _sys.exit(-1)
+
+        return players
 
 
     def recordScore(gameID, playerIDs, expansionIDs, cround, state):
