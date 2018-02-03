@@ -73,12 +73,16 @@ class cgame:
         # insert this into the database
 
         # get players for this game
-        self.getPlayers()
+        _sys.stdout.write("Collecting player information...\n")
+        while self.getPlayers():
+            continue
         # general information
         self.gameID = 0
 
         # get expansions used for this game
-        self.getExpansions()
+        _sys.stdout.write("Collecting expansion information...\n")
+        while self.getExpansions():
+            continue
 
         # game state information
         self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
@@ -110,9 +114,12 @@ class cgame:
                         continue
                 if not matched:
                     _sys.stderr.write("Error: player ID {0:d} does not match an option from the list.\n".format(playerID))
+                    return 1
         else:
             _sys.stderr.write("Error: players table empty. Exiting.\n")
             _sys.exit(-1)
+
+        return 0
 
 
     def getExpansions(self):
@@ -135,11 +142,18 @@ class cgame:
                 expaninput = input("Please list the numbers for the " + exptype + " used in this game: ")
                 expanIDs = [int(x) for x in expaninput.split()]
                 for expanID in expanIDs:
+                    matched = False
                     for dbexpan in dbexpans:
                         if expanID == dbexpan[0]:
                             self.expansionIDs.append(expanID)
+                            matched = True
+                            continue
+                    if not matched:
+                        _sys.stderr.write("Error: expansion ID {0:d} does not match an option from the list.\n".format(expanID))
+                        return 1
             else:
                 sys.stdout.write("No active " + exptype + " expansions found. Continuing.\n")
+        return 0
 
 
     def recordScore(gameID, playerIDs, expansionIDs, cround, state):
@@ -203,32 +217,32 @@ class cgame:
             if self.state:
                 prompt = "postgame > "
             else:
-                prompt = "round: {0:d}, turn: {1:d} > ".format(int(1 + _np.floor((self.ntile-self.nbuilder) / len(self.players))),
+                prompt = "round: {0:d}, turn: {1:d} > ".format(int(_np.floor((self.ntile-self.nbuilder) / len(self.players))),
                                                                self.ntile-self.nbuilder)
 
             try:
                 cmd = input(prompt)
             except (EOFError, KeyboardInterrupt):
                 _sys.stderr.write('Improper input. Please retry\n')
-                showCommands()
+                self.showCommands()
 
             if _re.match('e', cmd, _re.IGNORECASE):
-                advanceState()
+                self.advanceState()
             elif _re.match('s', cmd, _re.IGNORECASE):
                 printStatus(tilestats=True)
             elif _re.match('n', cmd, _re.IGNORECASE):
-                advanceTurn()
+                self.advanceTurn()
             elif _re.match('r', cmd, _re.IGNORECASE):
-                recordScore()
+                self.recordScore()
             elif _re.match('t', cmd, _re.IGNORECASE):
-                advanceTurn(builder=False)
+                self.advanceTurn(builder=False)
             elif _re.match('b', cmd, _re.IGNORECASE):
-                advanceTurn(builder=True)
-            elif _re.match('?', cmd, _re.IGNORECASE):
-                showCommands()
+                self.advanceTurn(builder=True)
+            elif _re.match('\?', cmd, _re.IGNORECASE):
+                self.showCommands()
             else:
                 _sys.stderr.write('Command not understood. Please try again.\n')
-                showCommands()
+                self.showCommands()
 
         if state == 2:
             #game is over. write end time to the games table
