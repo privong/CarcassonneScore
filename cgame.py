@@ -63,30 +63,41 @@ class cgame:
         Initialize a game
         """
 
-        # check to see if there's a game which has not yet been finished (i.e., has a starttime but no endtime). If there is, resume it. Otherwise:
-        # generate a new game ID and enter a start time
-        # get a list of players (from database list)
-        # have user input which expansions are being used
-        time = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
-
-        # insert this into the database
-
         # get players for this game
         _sys.stdout.write("Collecting player information...\n")
         while self.getPlayers():
             continue
-        # general information
-        self.gameID = 0
 
         # get expansions used for this game
         _sys.stdout.write("Collecting expansion information...\n")
         while self.getExpansions():
             continue
 
+        # get general game info (do this after expansions because
+        # expansion info is entered into the game table)
+        while self.gameInfo()
+            continue
+
         # game state information
         self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
         self.ntile = 1  # number of tiles played
         self.nbuilder = 0   # number of tiles placed due to builders
+
+
+    def gameInfo(self):
+        """
+        Load basic game info
+        """
+
+        location = input("Where is the game being played? ")
+
+        starttime = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
+
+        c.execute('INSERT INTO TABLE games (location, starttime, expansions) VALUES ' + location + ',' + starttime + ',"' + ["{0:d}".format(x) for x in self.expansionIDs].join(',') + '")')
+
+        gID = c.execute('select last_insert_rowid();').fetchall()[0]
+
+        self.gameID = gID
 
 
     def getPlayers(self):
@@ -182,6 +193,8 @@ class cgame:
         """
         Make a new entry in the turns table
         """
+
+        cmdtime = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
 
         command = '''INSERT INTO turns VALUES ({0:d}, {1:d}, '''.format(self.gameID, self.ntile)
         command = command + cmdtime
