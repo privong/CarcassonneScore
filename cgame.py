@@ -72,11 +72,12 @@ class cgame:
 
         # insert this into the database
 
+        # get players for this game
         dbplayers = getPlayers()
         for dbplayer in dbplayers:
             print("{0:d}) ".format(dbplayer[0]) + dbplayer[1])
         playerinput = input("Please list the IDs for the players in this game (in order of play): ")
-        playerIDs = [int(x) for x in player.input.split()]
+        playerIDs = [int(x) for x in playerinput.split()]
 
         self.players = []
         for playerID in playerIDs:
@@ -86,7 +87,9 @@ class cgame:
 
         # general information
         self.gameID =
-        self.expansionIDs =
+
+        # get expansions used for this game
+        getExpansions()
 
         # game state information
         self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
@@ -106,6 +109,33 @@ class cgame:
             _sys.exit(-1)
 
         return players
+
+
+    def getExpansions(self):
+        """
+        Get a list of playable expansions
+        """
+
+        self.expansionIDs = []
+
+        for minisel in range(0, 2):
+            if minisel:
+                exptype = "mini"
+            else:
+                exptype = "large"
+            expans = self.cur.execute('''SELECT expansionID,name FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
+
+            if len(expans):
+                for dbexpan in dbexpan:
+                    print("{0:d}) ".format(dbexpan[0]) + dbexpan[1])
+                expaninput = input("Please list the numbers for the " + exptype + " used in this game: ")
+                expanIDs = [int(x) for x in expanplayer.input.split()]
+                for expanID in expanID:
+                    for dbexpan in dbexpan:
+                        if expanID == dbexpan[0]:
+                            self.expansionIDs.append(expanID)
+            else:
+                sys.stdout.write("No active " + exptype + " expansions found. Continuing.\n")
 
 
     def recordScore(gameID, playerIDs, expansionIDs, cround, state):
