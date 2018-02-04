@@ -86,6 +86,7 @@ c.execute('''CREATE TABLE scores (gameID INTEGER NOT NULL,
 # mini - 1 if a mini expanion, otherwise 0
 # active - 1 if it can be played, otherwise 0
 # tokens - additional tokens provided beyond the base game
+# scoretypes - additional classes of scoring enabled
 # Ntiles - number of tiles added
 # tiletypes - special scorable tiles added
 c.execute('''CREATE TABLE expansions (expansionID INTEGER PRIMARY KEY,
@@ -93,6 +94,7 @@ c.execute('''CREATE TABLE expansions (expansionID INTEGER PRIMARY KEY,
                                       mini INTEGER,
                                       active INTEGER,
                                       tokens TEXT,
+                                      scoretypes TEXT,
                                       Ntiles INTEGER,
                                       tiletypes TEXT)''')
 # large expansions
@@ -103,6 +105,7 @@ c.execute('''INSERT INTO expansions values (1,
                                             0,
                                             1,
                                             "BigMeeple",
+                                            "",
                                             18,
                                             "Cathedral,InnonLake")''')
 c.execute('''INSERT INTO expansions values (2,
@@ -110,12 +113,14 @@ c.execute('''INSERT INTO expansions values (2,
                                             0,
                                             1,
                                             "Pig,Builder",
+                                            "",
                                             24,
                                             "TradeGoods")''')
 c.execute('''INSERT INTO expansions values (3,
                                             "Princess & Dragon",
                                             0,
                                             0,
+                                            "",
                                             "",
                                             0,
                                             "")''')
@@ -124,6 +129,7 @@ c.execute('''INSERT INTO expansions values (4,
                                             0,
                                             0,
                                             "",
+                                            "",
                                             0,
                                             "")''')
 c.execute('''INSERT INTO expansions values (5, 
@@ -131,12 +137,14 @@ c.execute('''INSERT INTO expansions values (5,
                                             0,
                                             1,
                                             "Mayor,Wagon,Barn",
+                                            "",
                                             12,
                                             "Abbey")''')
 c.execute('''INSERT INTO expansions values (6,
                                             "Count, King & Robber",
                                             0,
                                             0,
+                                            "",
                                             "",
                                             0,
                                             "")''')
@@ -145,12 +153,14 @@ c.execute('''INSERT INTO expansions values (7,
                                             0,
                                             0,
                                             "",
+                                            "",
                                             0,
                                             "")''')
 c.execute('''INSERT INTO expansions values (8,
                                             "Bridges, Castles & Bazaars",
                                             0,
                                             0,
+                                            "",
                                             "",
                                             0,
                                             "")''')
@@ -159,12 +169,14 @@ c.execute('''INSERT INTO expansions values (9,
                                             0,
                                             0,
                                             "",
+                                            "",
                                             0,
                                             "")''')
 c.execute('''INSERT INTO expansions values (10,
                                             "Under the Big Top",
                                             0,
                                             0,
+                                            "",
                                             "",
                                             0,
                                             "")''')
@@ -174,6 +186,7 @@ c.execute('''INSERT INTO expansions values(101,
                                            1,
                                            1,
                                            "",
+                                           "",
                                            12,
                                            "")''')
 c.execute('''INSERT INTO expansions values(102,
@@ -181,6 +194,7 @@ c.execute('''INSERT INTO expansions values(102,
                                            1,
                                            1,
                                            "Abbott",
+                                           "Garden",
                                            0,
                                            "")''')
 
