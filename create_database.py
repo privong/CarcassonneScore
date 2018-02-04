@@ -62,10 +62,11 @@ c.execute('''CREATE TABLE turns (gameID INTEGER NOT NULL,
 # gameID - unique per game
 # playerID - corresponds to entry from players table
 # turnNum - turn number (corresponds to number in turns table)
-# scoreID - ID number for the score (unique to table or to game?)
+# scoreID - ID number for the score (unique to game?)
 # ingame - 1 if scored during regular play, 0 if scored after tiles are gone
 # points - number of points awarded
 # scoretype - road, city, meadow, etc.
+# sharedscore - was this score shared with another player?
 # token - token(s) used for score (e.g., meeple, wagon, pig)
 # extras - any other items (e.g., trade goods)
 # comments - text annotation
