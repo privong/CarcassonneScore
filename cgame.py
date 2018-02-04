@@ -37,7 +37,7 @@ class cgame:
 
         self.commands = [('r', 'record score and advance turn'),
                          ('t', 'advance turn, no score'),
-                         ('b', 'additional turn for a player due to a builder'),
+                         ('b', 'additional turn for a player due to a builder (use for the 2nd play by a player)'),
                          ('e', 'end game (or play if already in postgame scoring'),
                          ('s', '(current) score and game status'),
                          ('?', 'print help')]
@@ -139,13 +139,15 @@ class cgame:
         """
 
         self.expansionIDs = []
+        self.tokens = ["Meeple"]
+        self.tiletypes = []
 
         for minisel in range(0, 2):
             if minisel:
                 exptype = "mini"
             else:
                 exptype = "large"
-            dbexpans = self.cur.execute('''SELECT expansionID,name,Ntiles FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
+            dbexpans = self.cur.execute('''SELECT expansionID,name,tokens,Ntiles,tiletypes FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
 
             if len(dbexpans):
                 for dbexpan in dbexpans:
@@ -157,7 +159,15 @@ class cgame:
                     for dbexpan in dbexpans:
                         if expanID == dbexpan[0]:
                             self.expansionIDs.append(expanID)
-                            self.totaltiles += dbexpan[2]
+                            self.totaltiles += dbexpan[3]
+                            ttypes = dbexpan[2].split(',')
+                            if len(ttypes):
+                                for token in ttypes:
+                                    self.tokens.append(token)
+                            tiletypes = dbexpan[4].split(',')
+                            if len(tiletypes):
+                                for tile in tiletypes:
+                                    self.tiletypes.append(tile)
                             matched = True
                             continue
                     if not matched:
@@ -178,10 +188,11 @@ class cgame:
 
         player = self.getCurrentPlayer()
 
-        pID = input("")
-
-        # if the builder was used
-        BUILDERUSED = True
+        bquest = input("Was the builder used (y/n)? ")
+        if _re.match('y', bquest, _re.IGNORECASE):
+            BUILDERUSED = True
+        else:
+            BUILDERUSED = False
 
         advanceTurn(builder=BUILDERUSED)
 
