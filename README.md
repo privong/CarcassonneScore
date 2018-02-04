@@ -27,4 +27,4 @@ This launches the interactive shell. Press `?` for a list of commands.
 
 ### Analysis
 
-Sample analysis script will eventually be posted in `analysis/`.
+A sample analysis jupyter notebook and a sample sqlite database containing one game is available in the `analysis/` directory.
