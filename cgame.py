@@ -173,13 +173,10 @@ class cgame:
         Record a score event in the game
         """
 
-        if state:
+        if self.state:
             ingame = 0
 
-        pname = getPlayerNames(playerIDs)
-
-
-       # for i, pname in enumerate(pname):
+        player = self.getCurrentPlayer()
 
         pID = input("")
 
@@ -206,7 +203,7 @@ class cgame:
             bID = 0
 
         # compute playerID based on the turn number minus nbuilders / number of players
-        player = self.players[int((self.ntile - self.nbuilder) % len(self.players))]
+        player = self.getCurrentPlayer()
         command = command + ', {0:d}, {1:d})'.format(bID, player[0])
 
         self.cur.execute(command)
@@ -289,3 +286,11 @@ class cgame:
 
         _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
                                                                                   self.totaltiles - self.ntile))
+
+
+    def getCurrentPlayer(self):
+        """
+        Return the current player, determined by the turn number
+        """
+
+        return self.players[int((self.ntile - self.nbuilder) % len(self.players))]
