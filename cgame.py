@@ -45,6 +45,7 @@ class cgame:
         self.conn = _sqlite3.connect('CarcassonneScore.db')
         self.cur = self.conn.cursor()
 
+        self.timefmt = "%Y-%m-%dT%H:%M:%S"
         self.setupGame()
 
 
@@ -97,7 +98,7 @@ class cgame:
 
         location = input("Where is the game being played? ")
 
-        starttime = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
+        starttime = _datetime.utcnow().strftime(self.timefmt)
 
         self.cur.execute('INSERT INTO games (location, starttime, expansions) VALUES ("' + location + '","' + starttime + '","' + ','.join(["{0:d}".format(x) for x in self.expansionIDs]) + '")')
 
@@ -325,7 +326,7 @@ class cgame:
         Make a new entry in the turns table
         """
 
-        cmdtime = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
+        cmdtime = _datetime.utcnow().strftime(self.timefmt)
 
         command = '''INSERT INTO turns VALUES ({0:d}, {1:d}, "'''.format(self.gameID, self.ntile)
         command = command + cmdtime + '"'
@@ -395,7 +396,7 @@ class cgame:
 
         if self.state == 2:
             #game is over. write end time to the games table
-            time = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
+            time = _datetime.utcnow().strftime(self.timefmt)
             self.cur.execute('''UPDATE games SET endtime = "''' + time + '''" WHERE gameID = ''' + str(self.gameID))
             self.conn.commit()
 
