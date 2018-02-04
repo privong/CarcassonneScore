@@ -1,3 +1,14 @@
 # Changelog
 
-Nothing yet, since there have not been any released to compare against. :)
+## 0.X Series
+
+### 0.1.1
+
+#### Bugfixes
+
+* Add missing score type
+
+### 0.1.0
+
+Initial release.
+
