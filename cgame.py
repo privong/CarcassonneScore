@@ -40,6 +40,7 @@ class cgame:
                          ('b', 'additional turn for a player due to a builder (use for the 2nd play by a player)'),
                          ('e', 'end game (or play if already in postgame scoring'),
                          ('s', '(current) score and game status'),
+                         ('q', 'quit (will be removed for real gameplay'),
                          ('?', 'print help')]
 
         self.conn = _sqlite3.connect('CarcassonneScore.db')
@@ -244,6 +245,8 @@ class cgame:
 
             if _re.match('e', cmd, _re.IGNORECASE):
                 self.advanceState()
+            elif _re.match('q', cmd, _re.IGNORECASE):
+                _sys.exit(0)
             elif _re.match('s', cmd, _re.IGNORECASE):
                 self.printStatus(tilestats=True)
             elif _re.match('n', cmd, _re.IGNORECASE):
