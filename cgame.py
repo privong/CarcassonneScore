@@ -219,8 +219,15 @@ class cgame:
             for player in self.players:
                 _sys.stdout.write("{0:d}) ".format(player[0]) + player[1] + "\n")
             scoreplayers = input("Please enter the numbers for the players who scored: ")
-            score['playerIDs'] = [int(x) for x in scoreplayers.split()]
-            VALID = True
+            try:
+                score['playerIDs'] = [int(x) for x in scoreplayers.split()]
+                if len(score['playerIDs']):
+                    VALID = True
+                else:
+                    _sys.stderr.write("There must be at least one player.\n")
+            except:
+                _sys.stderr.write("Error, could not parse players list.\n")
+                continue
             if len(score['playerIDs']) > 1:
                 score['sharedscore'] = 1
 
@@ -360,13 +367,17 @@ class cgame:
                 _sys.stderr.write('Command not understood. Please try again.\n')
                 self.showCommands()
 
-        if state == 2:
+        if self.state == 2:
             #game is over. write end time to the games table
             time = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
-            self.cur.execute('''UPDATE games SET endtime = "''' + time + '''" WHERE gameID = ''' + str(gameID))
-            conn.commit()
+            self.cur.execute('''UPDATE games SET endtime = "''' + time + '''" WHERE gameID = ''' + str(self.gameID))
+            self.conn.commit()
 
-        printStatus(tilestats=False)
+        _sys.stdout.write("Game over!\n")
+
+        self.printStatus(tilestats=False, sort=True)
+
+        self.conn.close()
 
         #### Is there a way to capture "ineffective" uses? For example,
         #### meeples that don't score points because they end up in a meadow that's
@@ -389,12 +400,7 @@ class cgame:
                              ('?', 'print help')]
 
             _sys.stdout.write("At the end of regulation... ")
-            printStatus(tilestats=False, sort=True)
-
-        else:
-            _sys.stdout.write("Game over!\n\n")
-            printStatus(tilestats=False, sort=True)
-
+            self.printStatus(tilestats=False, sort=True)
 
 
     def printStatus(self, tilestats=False, sort=False):
@@ -404,7 +410,7 @@ class cgame:
         sort will trigger sorting by score
         """
 
-        _sys.stdout.write('\nCurrent Score\n')
+        _sys.stdout.write('\nScore\n')
 
         for player in self.players:
             a = self.cur.execute('SELECT points FROM scores WHERE gameID={0:d} and playerID={1:d}'.format(self.gameID, player[0]))
@@ -413,8 +419,9 @@ class cgame:
 
             _sys.stdout.write('\t' + player[1]+ ': {0:1.0f}'.format(score) + '\n')
 
-        _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
-                                                                                  self.totaltiles - self.ntile))
+        if tilestats:
+            _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
+                                                                                      self.totaltiles - self.ntile))
 
 
     def getCurrentPlayer(self):
