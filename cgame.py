@@ -103,6 +103,10 @@ class cgame:
 
         self.gameID = gID[0]
 
+        self.tokens = ["Meeple"]
+        self.tiletypes = []
+        self.scoretypes = ["Meadow", "City", "Road"]
+
 
     def getPlayers(self):
         """
@@ -142,15 +146,13 @@ class cgame:
         """
 
         self.expansionIDs = []
-        self.tokens = ["Meeple"]
-        self.tiletypes = []
 
         for minisel in range(0, 2):
             if minisel:
                 exptype = "mini"
             else:
                 exptype = "large"
-            dbexpans = self.cur.execute('''SELECT expansionID,name,tokens,Ntiles,tiletypes FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
+            dbexpans = self.cur.execute('''SELECT expansionID,name,tokens,Ntiles,tiletypes,scoretypes FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
 
             if len(dbexpans):
                 for dbexpan in dbexpans:
@@ -159,8 +161,7 @@ class cgame:
                 expanIDs = [int(x) for x in expaninput.split()]
                 for expanID in expanIDs:
                     matched = False
-                    # only add the additional builder command if Traders &
-                    # Builders is being played
+                    # add the builder cmd if Traders & Builders is used
                     if expanID == 2:
                         self.commands.append(('b', 'additional turn for a player due to a builder (use for the 2nd play by a player)'))
                     for dbexpan in dbexpans:
@@ -169,12 +170,19 @@ class cgame:
                             self.totaltiles += dbexpan[3]
                             ttypes = dbexpan[2].split(',')
                             if len(ttypes):
+                                # add new types of tokens
                                 for token in ttypes:
                                     self.tokens.append(token)
                             tiletypes = dbexpan[4].split(',')
                             if len(tiletypes):
+                                # add special tiles
                                 for tile in tiletypes:
                                     self.tiletypes.append(tile)
+                            stypes = dbexpan[5].split(',')
+                            if len(stypes):
+                                # add new types of scoring
+                                for stype in stypes:
+                                    self.scoretypes.append(stype)
                             matched = True
                             continue
                     if not matched:
@@ -191,7 +199,7 @@ class cgame:
         """
 
         score = {'gameID': self.gameID,
-                 'playerID': -1,
+                 'playerIDs': -1,
                  'turnNum': self.ntile,
                  'scoreID': self.nscore,
                  'ingame' : 1,
@@ -206,30 +214,40 @@ class cgame:
             score['ingame'] = 0
 
         # ask the user which player scored
-        score['playerID'] = ...
+        VALID = False
+        while not VALID:
+            for player in self.players:
+                _sys.stdout.write("{0:d}) ".format(player[0]) + player[1] + "\n")
+            scoreplayers = input("Please enter the numbers for the players who scored: ")
+            score['playerIDs'] = [int(x) for x in scoreplayers.split()]
+            VALID = True
+            if len(score['playerIDs']) > 1:
+                score['sharedscore'] = 1
 
         # get points for score
         VALID = False
         while not VALID:
-            score = input("Enter the total number of points: ")
+            points = input("Enter the total number of points: ")
             try:
-                score['points'] = int(score)
+                score['points'] = int(points)
                 VALID = True
             except:
-                _sys.stderr.write("'" + commnd + "' is not a valid score.\n")
+                _sys.stderr.write("'" + points + "' is not a valid score.\n")
                 continue
 
         # get the score type
         VALID = False
         while not VALID:
+            for i, stype in enumerate(self.scoretypes):
+                _sys.stdout.write("{0:d}) ".format(i+1) + stype + "\n")
             # here i want a list of valid score types
             stype = input("Please select the score type: ")
-
-
-        # shared score?
-        VALID = False
-        while not VALID:
-            shared = input("Was this score shared with another player (y/n)? ")
+            try:
+                score['scoretype'] = self.scoretypes[int(stype)-1]
+                VALID = True
+            except:
+                _sys.stderr.write("'" + stype + "' is not a valid score type.\n")
+                continue
 
         # see which token scored
         # really this should be expanded to allow multiple token types for one score
@@ -237,7 +255,7 @@ class cgame:
             VALID = False
             while not VALID:
                 for i, token in enumerate(self.tokens):
-                    sys.stdout.write("{0:d}) ".format(i+1) + token + "\n")
+                    _sys.stdout.write("{0:d}) ".format(i+1) + token + "\n")
                 tID = input("Please select the token type: ")
                 try:
                     score['token'] += self.tokens[int(tID-1)]
@@ -248,13 +266,24 @@ class cgame:
         else:
             score['token'] = self.tokens[0]
 
+        # shared score?
+        VALID = False
+        while not VALID:
+            shared = input("Was this score shared with another player (y/n)? ")
+            if _re.match('y', shared, _re.IGNORECASE):
+                score['sharedscore'] = 1
+                VALID = True
+            elif _re.match('n', shared, _re.IGNORECASE):
+                VALID = True
+            else:
+                _sys.stderr.write("Invalid input.\n")
 
         # now construct a SQL query
         command = 'INSERT INTO scores VALUE ({0:d},'.format(self.gameID)
         command = command + '{0:d}, {1:d},'.format(self.ntile,
                                                   self.nscore)
 
-        if score['sharedscore']:
+#        if score['sharedscore']:
             # get the other player(s) who scored and construct SQL inserts for
             # scores
 
