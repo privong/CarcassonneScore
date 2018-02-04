@@ -70,6 +70,10 @@ class cgame:
         self.nbuilder = 0   # number of tiles placed due to builders
         self.totaltiles = 72    # may be increased by expansions
 
+        self.tokens = ["Meeple"]
+        self.tiletypes = []
+        self.scoretypes = ["Meadow", "City", "Road"]
+
         # get players for this game
         _sys.stdout.write("Collecting player information...\n")
         while self.getPlayers():
@@ -102,10 +106,6 @@ class cgame:
         self.conn.commit()
 
         self.gameID = gID[0]
-
-        self.tokens = ["Meeple"]
-        self.tiletypes = []
-        self.scoretypes = ["Meadow", "City", "Road"]
 
 
     def getPlayers(self):
@@ -172,17 +172,20 @@ class cgame:
                             if len(ttypes):
                                 # add new types of tokens
                                 for token in ttypes:
-                                    self.tokens.append(token)
+                                    if token:
+                                        self.tokens.append(token)
                             tiletypes = dbexpan[4].split(',')
                             if len(tiletypes):
                                 # add special tiles
                                 for tile in tiletypes:
-                                    self.tiletypes.append(tile)
+                                    if tile:
+                                        self.tiletypes.append(tile)
                             stypes = dbexpan[5].split(',')
                             if len(stypes):
                                 # add new types of scoring
                                 for stype in stypes:
-                                    self.scoretypes.append(stype)
+                                    if stype:
+                                        self.scoretypes.append(stype)
                             matched = True
                             continue
                     if not matched:
@@ -198,15 +201,12 @@ class cgame:
         Record a score event in the game
         """
 
-        score = {'gameID': self.gameID,
-                 'playerIDs': -1,
-                 'turnNum': self.ntile,
-                 'scoreID': self.nscore,
+        score = {'playerIDs': -1,
                  'ingame' : 1,
                  'points' : 0,
                  'scoretype': '',
                  'sharedscore': 0,
-                 'token': '',
+                 'tokens': '',
                  'extras': '',
                  'comments': ''}
 
@@ -256,36 +256,33 @@ class cgame:
             while not VALID:
                 for i, token in enumerate(self.tokens):
                     _sys.stdout.write("{0:d}) ".format(i+1) + token + "\n")
-                tID = input("Please select the token type: ")
+                tID = input("Please select the token type(s): ")
                 try:
-                    score['token'] += self.tokens[int(tID-1)]
+                    score['tokens'] = ','.join(self.tokens[int(x)-1] for x in tID.split())
                     VALID = True
                 except:
-                    _sys.stderr.write("'" + command + "' is not a valid token.\n")
+                    _sys.stderr.write("'" + tID + "' is not a valid token.\n")
                     continue
         else:
-            score['token'] = self.tokens[0]
+            score['tokens'] = self.tokens[0]
 
-        # shared score?
-        VALID = False
-        while not VALID:
-            shared = input("Was this score shared with another player (y/n)? ")
-            if _re.match('y', shared, _re.IGNORECASE):
-                score['sharedscore'] = 1
-                VALID = True
-            elif _re.match('n', shared, _re.IGNORECASE):
-                VALID = True
-            else:
-                _sys.stderr.write("Invalid input.\n")
-
+        score['comments'] = input("Enter any comments you would like saved (a single line): ")
         # now construct a SQL query
-        command = 'INSERT INTO scores VALUE ({0:d},'.format(self.gameID)
-        command = command + '{0:d}, {1:d},'.format(self.ntile,
-                                                  self.nscore)
+        for player in score['playerIDs']:
+            command = 'INSERT INTO scores VALUES ({0:d},'.format(self.gameID)
+            command = command + '{0:d},'.format(player)
+            command = command + '{0:d},{1:d},'.format(self.ntile,
+                                                       self.nscore)
+            command = command + '{0:d},{1:d},'.format(score['ingame'],
+                                                       score['points'])
+            command = command + '"' + score['scoretype'] + '",'
+            command = command + '{0:d},'.format(score['sharedscore'])
+            command = command + '"' + score['tokens'] + '",'
+            command = command + '"' + score['extras'] + '",'
+            command = command + '"' + score['comments'] + '")'
+            self.cur.execute(command)
 
-#        if score['sharedscore']:
-            # get the other player(s) who scored and construct SQL inserts for
-            # scores
+        self.conn.commit()
 
         # now increment the score number
         self.nscore += 1
