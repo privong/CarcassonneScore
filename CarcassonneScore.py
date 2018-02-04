@@ -22,6 +22,8 @@ import argparse
 import sys
 import cgame
 
+__version__ = "0.1.0"
+
 def getargs():
     """
     Get command line arguments.
