@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Class defenition for Carcassonne score keeping system.
+Class definition for Carcassonne score keeping system.
 
 Copyright 2018 George C. Privon
 
