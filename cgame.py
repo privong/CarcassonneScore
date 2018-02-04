@@ -231,8 +231,10 @@ class cgame:
             if self.state:
                 prompt = "postgame > "
             else:
-                prompt = "round: {0:d}, turn: {1:d} > ".format(int(_np.floor((self.ntile-self.nbuilder) / len(self.players))),
+                player = self.getCurrentPlayer()
+                prompt = "round: {0:d}, turn: {1:d} ".format(int(_np.floor((self.ntile-self.nbuilder) / len(self.players))),
                                                                self.ntile-self.nbuilder)
+                prompt = prompt + "(" + player[1] + ") > "
 
             try:
                 cmd = input(prompt)
