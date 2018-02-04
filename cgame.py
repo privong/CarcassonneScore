@@ -290,6 +290,13 @@ class cgame:
             score['tokens'] = self.tokens[0]
 
         score['comments'] = input("Enter any comments you would like saved (a single line): ")
+
+        # check score input to make sure it's correct
+        _sys.stdout.write('Player {0:d} scores {1:d} points on a '.format(score['playerIDs'][0], score['points']) + score['scoretype'] + '.\n')
+        answer = input("Is this correct? (y/n) ")
+        if not _re.match('y', answer, _re.IGNORECASE):
+            return 1
+
         # now construct a SQL query
         for player in score['playerIDs']:
             command = 'INSERT INTO scores VALUES ({0:d},'.format(self.gameID)
@@ -305,8 +312,8 @@ class cgame:
             command = command + '"' + score['comments'] + '")'
             self.cur.execute(command)
 
-        self.conn.commit()
 
+        self.conn.commit()
         # now increment the score number
         self.nscore += 1
 

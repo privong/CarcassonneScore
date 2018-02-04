@@ -11,6 +11,7 @@
 #### Enhancements
 
 * Require a minimum of 2 players
+* Implement a check on scores in case bad values are entered
 
 ### 0.1.1
 
