@@ -2,6 +2,14 @@
 
 ## 0.X Series
 
+### 0.1.2
+
+#### Bugfixes
+
+#### Enhancements
+
+* Require a minimum of 2 players
+
 ### 0.1.1
 
 #### Bugfixes

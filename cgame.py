@@ -123,6 +123,10 @@ class cgame:
             playerinput = input("Please list the IDs for the players in this game (in order of play): ")
             playerIDs = [int(x) for x in playerinput.split()]
 
+            if len(playerIDs) < 2:
+                _sys.stderr.write("Playing alone? You need at least one opponent!\n")
+                return 1
+
             for playerID in playerIDs:
                 matched = False
                 for dbplayer in dbplayers:
