@@ -120,8 +120,14 @@ class cgame:
         if len(dbplayers):
             for dbplayer in dbplayers:
                 _sys.stdout.write("{0:d}) ".format(dbplayer[0]) + dbplayer[1] + '\n')
-            playerinput = input("Please list the IDs for the players in this game (in order of play): ")
-            playerIDs = [int(x) for x in playerinput.split()]
+            VALID = False
+            while not VALID:
+                playerinput = input("Please list the IDs for the players in this game (in order of play): ")
+                try:
+                    playerIDs = [int(x) for x in playerinput.split()]
+                    VALID = True
+                except:
+                    _sys.stderr.write("Error: input must be a list of integers separated by spaces.\n")
 
             if len(playerIDs) < 2:
                 _sys.stderr.write("Playing alone? You need at least one opponent!\n")
@@ -161,8 +167,14 @@ class cgame:
             if len(dbexpans):
                 for dbexpan in dbexpans:
                     _sys.stdout.write("{0:d}) ".format(dbexpan[0]) + dbexpan[1] + '\n')
-                expaninput = input("Please list the numbers for the " + exptype + " used in this game: ")
-                expanIDs = [int(x) for x in expaninput.split()]
+                VALID = False
+                while not VALID:
+                    expaninput = input("Please list the numbers for the " + exptype + " used in this game: ")
+                    try:
+                        expanIDs = [int(x) for x in expaninput.split()]
+                        VALID = True
+                    except:
+                        _sys.stderr.write("Error: input must be a list of integers separated by spaces.\n")
                 for expanID in expanIDs:
                     matched = False
                     # add the builder cmd if Traders & Builders is used

@@ -2,9 +2,11 @@
 
 ## 0.X Series
 
-### 0.1.2
+### upcoming
 
 #### Bugfixes
+
+* check inputs
 
 #### Enhancements
 
