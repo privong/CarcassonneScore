@@ -35,9 +35,8 @@ class cgame:
         Initialize some variables and set up a game
         """
 
-        self.commands = [('r', 'record score and advance turn'),
+        self.commands = [('r', 'record score'),
                          ('t', 'advance turn, no score'),
-                         ('b', 'additional turn for a player due to a builder (use for the 2nd play by a player)'),
                          ('e', 'end game (or play if already in postgame scoring'),
                          ('s', '(current) score and game status'),
                          ('q', 'quit (will be removed for real gameplay'),
@@ -157,6 +156,10 @@ class cgame:
                 expanIDs = [int(x) for x in expaninput.split()]
                 for expanID in expanIDs:
                     matched = False
+                    # only add the additional builder command if Traders &
+                    # Builders is being played
+                    if expanID == 2:
+                        self.commands.append(('b', 'additional turn for a player due to a builder (use for the 2nd play by a player)'))
                     for dbexpan in dbexpans:
                         if expanID == dbexpan[0]:
                             self.expansionIDs.append(expanID)
