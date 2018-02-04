@@ -6,6 +6,7 @@ Score keeping software for [Carcassonne](https://boardgamegeek.com/boardgame/822
 
 * python 3 (tested under python 3.6.x)
 * numpy
+* matplotlib (for analysis scripts)
 
 ## Usage
 

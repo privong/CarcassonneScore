@@ -12,6 +12,7 @@
 
 * Require a minimum of 2 players
 * Implement a check on scores in case bad values are entered
+* Sample game data and an analysis notebook in the `analysis/` directory
 
 ### 0.1.1
 
