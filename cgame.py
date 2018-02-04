@@ -354,7 +354,10 @@ class cgame:
             elif _re.match('q', cmd, _re.IGNORECASE):
                 _sys.exit(0)
             elif _re.match('s', cmd, _re.IGNORECASE):
-                self.printStatus(tilestats=True)
+                if self.state:
+                    self.printStatus(tilestats=False)
+                else:
+                    self.printStatus(tilestats=True)
             elif _re.match('n', cmd, _re.IGNORECASE):
                 self.advanceTurn(builder=False)
             elif _re.match('r', cmd, _re.IGNORECASE):
