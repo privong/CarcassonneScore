@@ -29,6 +29,8 @@ c.execute('''CREATE TABLE players (playerID INTEGER PRIMARY KEY AUTOINCREMENT NO
 # player names
 c.execute('''INSERT INTO players values (0,
                                          "John Smith")''')
+c.execute('''INSERT INTO players values (1,
+                                         "Jane Doe")''')
 
 # games table
 # gameID - unique ID
@@ -172,6 +174,13 @@ c.execute('''INSERT INTO expansions values(101,
                                            1,
                                            "",
                                            12,
+                                           "")''')
+c.execute('''INSERT INTO expansions values(102,
+                                           "The Abbott",
+                                           1,
+                                           1,
+                                           "Abbott",
+                                           0,
                                            "")''')
 
 conn.commit()
