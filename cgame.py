@@ -112,7 +112,7 @@ class cgame:
 
         if len(dbplayers):
             for dbplayer in dbplayers:
-                _sys.stdout.write("{0:d}) ".format(dbplayer[0]) + dbplayer[1] + '\n' )
+                _sys.stdout.write("{0:d}) ".format(dbplayer[0]) + dbplayer[1] + '\n')
             playerinput = input("Please list the IDs for the players in this game (in order of play): ")
             playerIDs = [int(x) for x in playerinput.split()]
 
@@ -198,18 +198,18 @@ class cgame:
 
         cmdtime = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
 
-        command = '''INSERT INTO turns VALUES ({0:d}, {1:d}, '''.format(self.gameID, self.ntile)
-        command = command + cmdtime
+        command = '''INSERT INTO turns VALUES ({0:d}, {1:d}, "'''.format(self.gameID, self.ntile)
+        command = command + cmdtime + '"'
         if builder:
             bID = 1
         else:
             bID = 0
 
         # compute playerID based on the turn number minus nbuilders / number of players
-        playerID = playerIDs[(self.ntile- self.nbuilder) / len(playerIDs)]
+        playerID = self.playerIDs[(self.ntile- self.nbuilder) / len(playerIDs)]
         command = command + ', {0:d}, {1:d})'.format(bID, playerID)
 
-        c.execute(command)
+        self.cur.execute(command)
 
         self.ntile += 1
         if builder:
@@ -261,7 +261,7 @@ class cgame:
         if state == 2:
             #game is over. write end time to the games table
             time = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
-            c.execute('''UPDATE games SET endtime = "''' + time + '''" WHERE gameID = ''' + str(gameID))
+            self.cur.execute('''UPDATE games SET endtime = "''' + time + '''" WHERE gameID = ''' + str(gameID))
             conn.commit()
 
         printStatus(tilestats=False)
