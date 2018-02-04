@@ -72,7 +72,7 @@ class cgame:
 
         self.tokens = ["Meeple"]
         self.tiletypes = []
-        self.scoretypes = ["Meadow", "City", "Road"]
+        self.scoretypes = ["Meadow", "City", "Road", "Monastery"]
 
         # get players for this game
         _sys.stdout.write("Collecting player information...\n")
