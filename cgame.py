@@ -63,6 +63,12 @@ class cgame:
         Initialize a game
         """
 
+        # game state information
+        self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
+        self.ntile = 0  # number of tiles played
+        self.nbuilder = 0   # number of tiles placed due to builders
+        self.totaltiles = 72    # may be increased by expansions
+
         # get players for this game
         _sys.stdout.write("Collecting player information...\n")
         while self.getPlayers():
@@ -75,13 +81,8 @@ class cgame:
 
         # get general game info (do this after expansions because
         # expansion info is entered into the game table)
-        while self.gameInfo()
+        while self.gameInfo():
             continue
-
-        # game state information
-        self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
-        self.ntile = 1  # number of tiles played
-        self.nbuilder = 0   # number of tiles placed due to builders
 
 
     def gameInfo(self):
@@ -93,11 +94,11 @@ class cgame:
 
         starttime = _datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
 
-        c.execute('INSERT INTO TABLE games (location, starttime, expansions) VALUES ' + location + ',' + starttime + ',"' + ["{0:d}".format(x) for x in self.expansionIDs].join(',') + '")')
+        self.cur.execute('INSERT INTO games (location, starttime, expansions) VALUES ("' + location + '","' + starttime + '","' + ','.join(["{0:d}".format(x) for x in self.expansionIDs]) + '")')
 
-        gID = c.execute('select last_insert_rowid();').fetchall()[0]
+        gID = self.cur.execute('select last_insert_rowid();').fetchall()[0]
 
-        self.gameID = gID
+        self.gameID = gID[0]
 
 
     def getPlayers(self):
@@ -111,7 +112,7 @@ class cgame:
 
         if len(dbplayers):
             for dbplayer in dbplayers:
-                print("{0:d}) ".format(dbplayer[0]) + dbplayer[1])
+                _sys.stdout.write("{0:d}) ".format(dbplayer[0]) + dbplayer[1] + '\n' )
             playerinput = input("Please list the IDs for the players in this game (in order of play): ")
             playerIDs = [int(x) for x in playerinput.split()]
 
@@ -144,11 +145,11 @@ class cgame:
                 exptype = "mini"
             else:
                 exptype = "large"
-            dbexpans = self.cur.execute('''SELECT expansionID,name FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
+            dbexpans = self.cur.execute('''SELECT expansionID,name,Ntiles FROM expansions WHERE active==1 and mini=={0:d}'''.format(minisel)).fetchall()
 
             if len(dbexpans):
                 for dbexpan in dbexpans:
-                    print("{0:d}) ".format(dbexpan[0]) + dbexpan[1])
+                    _sys.stdout.write("{0:d}) ".format(dbexpan[0]) + dbexpan[1] + '\n')
                 expaninput = input("Please list the numbers for the " + exptype + " used in this game: ")
                 expanIDs = [int(x) for x in expaninput.split()]
                 for expanID in expanIDs:
@@ -156,13 +157,14 @@ class cgame:
                     for dbexpan in dbexpans:
                         if expanID == dbexpan[0]:
                             self.expansionIDs.append(expanID)
+                            self.totaltiles += dbexpan[2]
                             matched = True
                             continue
                     if not matched:
                         _sys.stderr.write("Error: expansion ID {0:d} does not match an option from the list.\n".format(expanID))
                         return 1
             else:
-                sys.stdout.write("No active " + exptype + " expansions found. Continuing.\n")
+                _sys.stdout.write("No active " + exptype + " expansions found. Continuing.\n")
         return 0
 
 
@@ -241,7 +243,7 @@ class cgame:
             if _re.match('e', cmd, _re.IGNORECASE):
                 self.advanceState()
             elif _re.match('s', cmd, _re.IGNORECASE):
-                printStatus(tilestats=True)
+                self.printStatus(tilestats=True)
             elif _re.match('n', cmd, _re.IGNORECASE):
                 self.advanceTurn()
             elif _re.match('r', cmd, _re.IGNORECASE):
@@ -276,14 +278,14 @@ class cgame:
         Print the total score (current or final) for the specified gameID
         """
 
-        for playerID in self.playerIDs:
-            pname = c.execute('SELECT name FROM players WHERE playerID={0:d}'.format(playerID[0])).fetchall()[0]
-            a = c.execute('SELECT points FROM scores WHER gameID={0:d} and playerID={1:d}'.format(self.gameID, playerID[0]))
+        _sys.stdout.write('\nCurrent Score\n')
+
+        for player in self.players:
+            a = self.cur.execute('SELECT points FROM scores WHERE gameID={0:d} and playerID={1:d}'.format(self.gameID, player[0]))
             res = a.fetchall()
             score = _np.sum(res)
 
-            print(pname + ': {0:d}'.format(score))
+            _sys.stdout.write('\t' + player[1]+ ': {0:1.0f}'.format(score) + '\n')
 
-        print("{0:d} tiles played out of {1:d} total ({2:d} remaining).".format(self.ntiles,
-                                                                                self.totaltiles,
-                                                                                self.totaltiles - self.ntiles))
+        _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
+                                                                                  self.totaltiles - self.ntile))
