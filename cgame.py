@@ -36,8 +36,8 @@ class cgame:
         """
 
         self.commands = [('r', 'record score'),
-                         ('t', 'advance turn, no score'),
-                         ('e', 'end game (or play if already in postgame scoring'),
+                         ('n', 'next turn'),
+                         ('e', 'end game (or end play if already in postgame scoring)'),
                          ('s', '(current) score and game status'),
                          ('q', 'quit (will be removed for real gameplay'),
                          ('?', 'print help')]
@@ -65,6 +65,7 @@ class cgame:
 
         # game state information
         self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
+        self.nscore = 0
         self.ntile = 0  # number of tiles played
         self.nbuilder = 0   # number of tiles placed due to builders
         self.totaltiles = 72    # may be increased by expansions
@@ -97,6 +98,8 @@ class cgame:
         self.cur.execute('INSERT INTO games (location, starttime, expansions) VALUES ("' + location + '","' + starttime + '","' + ','.join(["{0:d}".format(x) for x in self.expansionIDs]) + '")')
 
         gID = self.cur.execute('select last_insert_rowid();').fetchall()[0]
+
+        self.conn.commit()
 
         self.gameID = gID[0]
 
@@ -187,10 +190,76 @@ class cgame:
         Record a score event in the game
         """
 
-        if self.state:
-            ingame = 0
+        score = {'gameID': self.gameID,
+                 'playerID': -1,
+                 'turnNum': self.ntile,
+                 'scoreID': self.nscore,
+                 'ingame' : 1,
+                 'points' : 0,
+                 'scoretype': '',
+                 'sharedscore': 0,
+                 'token': '',
+                 'extras': '',
+                 'comments': ''}
 
-        player = self.getCurrentPlayer()
+        if self.state:
+            score['ingame'] = 0
+
+        # ask the user which player scored
+        score['playerID'] = ...
+
+        # get points for score
+        VALID = False
+        while not VALID:
+            score = input("Enter the total number of points: ")
+            try:
+                score['points'] = int(score)
+                VALID = True
+            except:
+                _sys.stderr.write("'" + commnd + "' is not a valid score.\n")
+                continue
+
+        # get the score type
+        VALID = False
+        while not VALID:
+            # here i want a list of valid score types
+            stype = input("Please select the score type: ")
+
+
+        # shared score?
+        VALID = False
+        while not VALID:
+            shared = input("Was this score shared with another player (y/n)? ")
+
+        # see which token scored
+        # really this should be expanded to allow multiple token types for one score
+        if len(self.tokens) > 1:
+            VALID = False
+            while not VALID:
+                for i, token in enumerate(self.tokens):
+                    sys.stdout.write("{0:d}) ".format(i+1) + token + "\n")
+                tID = input("Please select the token type: ")
+                try:
+                    score['token'] += self.tokens[int(tID-1)]
+                    VALID = True
+                except:
+                    _sys.stderr.write("'" + command + "' is not a valid token.\n")
+                    continue
+        else:
+            score['token'] = self.tokens[0]
+
+
+        # now construct a SQL query
+        command = 'INSERT INTO scores VALUE ({0:d},'.format(self.gameID)
+        command = command + '{0:d}, {1:d},'.format(self.ntile,
+                                                  self.nscore)
+
+        if score['sharedscore']:
+            # get the other player(s) who scored and construct SQL inserts for
+            # scores
+
+        # now increment the score number
+        self.nscore += 1
 
         return 0
 
@@ -214,6 +283,7 @@ class cgame:
         command = command + ', {0:d}, {1:d})'.format(bID, player[0])
 
         self.cur.execute(command)
+        self.conn.commit()
 
         self.ntile += 1
         if builder:
@@ -253,11 +323,9 @@ class cgame:
             elif _re.match('s', cmd, _re.IGNORECASE):
                 self.printStatus(tilestats=True)
             elif _re.match('n', cmd, _re.IGNORECASE):
-                self.advanceTurn()
+                self.advanceTurn(builder=False)
             elif _re.match('r', cmd, _re.IGNORECASE):
                 self.recordScore()
-            elif _re.match('t', cmd, _re.IGNORECASE):
-                self.advanceTurn(builder=False)
             elif _re.match('b', cmd, _re.IGNORECASE):
                 self.advanceTurn(builder=True)
             elif _re.match('\?', cmd, _re.IGNORECASE):
