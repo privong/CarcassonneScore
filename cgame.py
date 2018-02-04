@@ -375,9 +375,33 @@ class cgame:
         return 0
 
 
-    def printStatus(self, tilestats=False):
+    def advanceState(self):
+        """
+        End the main part of play or finish the game
+        """
+
+        self.state += 1
+
+        if self.state < 2:
+            self.commands = [('r', 'record score'),
+                             ('e', 'end game (or end play if already in postgame scoring)'),
+                             ('s', '(current) score and game status'),
+                             ('?', 'print help')]
+
+            _sys.stdout.write("At the end of regulation... ")
+            printStatus(tilestats=False, sort=True)
+
+        else:
+            _sys.stdout.write("Game over!\n\n")
+            printStatus(tilestats=False, sort=True)
+
+
+
+    def printStatus(self, tilestats=False, sort=False):
         """
         Print the total score (current or final) for the specified gameID
+        tilestats controls printing info on the number of tiles played/remaining
+        sort will trigger sorting by score
         """
 
         _sys.stdout.write('\nCurrent Score\n')
