@@ -168,7 +168,7 @@ class cgame:
         return 0
 
 
-    def recordScore(gameID, playerIDs, expansionIDs, cround, state):
+    def recordScore(self):
         """
         Record a score event in the game
         """
@@ -206,8 +206,8 @@ class cgame:
             bID = 0
 
         # compute playerID based on the turn number minus nbuilders / number of players
-        playerID = self.playerIDs[(self.ntile- self.nbuilder) / len(playerIDs)]
-        command = command + ', {0:d}, {1:d})'.format(bID, playerID)
+        player = self.players[int((self.ntile - self.nbuilder) % len(self.players))]
+        command = command + ', {0:d}, {1:d})'.format(bID, player[0])
 
         self.cur.execute(command)
 
