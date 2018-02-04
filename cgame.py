@@ -188,14 +188,6 @@ class cgame:
 
         player = self.getCurrentPlayer()
 
-        bquest = input("Was the builder used (y/n)? ")
-        if _re.match('y', bquest, _re.IGNORECASE):
-            BUILDERUSED = True
-        else:
-            BUILDERUSED = False
-
-        advanceTurn(builder=BUILDERUSED)
-
         return 0
 
 
