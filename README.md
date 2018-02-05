@@ -29,7 +29,7 @@ This launches the interactive shell. Press `?` for a list of commands.
 To update the database (add new players toggle availability of expansions), use the `update_database.py` command. For example, to add a new player:
 
 ```
-$ python update_database.py -n "NEW PLAYER"
+$ python update_database.py -n NEW PLAYER
 ```
 
 Use `python update_database.py -h` to see the full list of options.

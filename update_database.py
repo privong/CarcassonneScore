@@ -32,6 +32,7 @@ def parseArgs():
     parser = argparse.ArgumentParser(description="Update the Carcassonne \
 scoring database.")
     parser.add_argument('-n', '--newplayer', type=str, default=None,
+                        nargs='+',
                         help='Add a new player.')
     parser.add_argument('-e', '--enableexpansion', action='store_true',
                         default=False,
@@ -56,15 +57,18 @@ def main():
     VALID = False
 
     if args.newplayer:
-        sys.stdout.write("Adding new player: " + args.newplayer)
+        pname = ' '.join(args.newplayer)
+        sys.stdout.write("Adding new player: " + pname)
         sys.stdout.write(" to the database.\n")
         while not VALID:
             ans = input("Is this correct (y/n)? ")
             if re.match('y', ans, re.IGNORECASE):
                 cur.execute('INSERT INTO players (name) VALUES ("' + \
-                            args.newplayer + '")')
+                            pname + '")')
+                sys.stdout.write(pname + ' added to the database.\n')
                 VALID = True
             elif re.match('n', ans, re.IGNORECASE):
+                sys.stdout.write('Canceling.\n')
                 VALID = True
 
     conn.commit()
