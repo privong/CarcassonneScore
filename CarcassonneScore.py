@@ -31,7 +31,7 @@ def getargs():
 
     parser = argparse.ArgumentParser(description="Carcassonne score keeping \
 system.")
-    
+
     return parser.parse_args()
 
 

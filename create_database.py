@@ -132,7 +132,7 @@ c.execute('''INSERT INTO expansions values (4,
                                             "",
                                             0,
                                             "")''')
-c.execute('''INSERT INTO expansions values (5, 
+c.execute('''INSERT INTO expansions values (5,
                                             "Abbey & Mayor",
                                             0,
                                             1,
