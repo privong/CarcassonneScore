@@ -2,11 +2,12 @@
 
 ## 0.3 Series
 
-### 0.3.0 (future)
+### 0.3.0
 
 #### Enhancements
 
 * new `manage_database.py` script to create and maintain the database
+* add database versioning
 
 ## 0.2 Series
 
