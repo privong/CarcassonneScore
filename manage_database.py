@@ -48,7 +48,7 @@ scoring database.")
     return parser.parse_args()
 
 
-def initializeDB(c. DBVER):
+def initializeDB(c, DBVER):
     """
     Initialize Database
     """

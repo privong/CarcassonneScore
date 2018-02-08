@@ -2,6 +2,12 @@
 
 ## 0.3 Series
 
+### 0.3.2
+
+#### Bugfix
+
+* syntax error in `manage_database.py`
+
 ### 0.3.1
 
 #### Bugfix
