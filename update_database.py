@@ -31,15 +31,16 @@ def parseArgs():
 
     parser = argparse.ArgumentParser(description="Update the Carcassonne \
 scoring database.")
-    parser.add_argument('-n', '--newplayer', type=str, default=None,
-                        nargs='+',
-                        help='Add a new player.')
-    parser.add_argument('-e', '--enableexpansion', action='store_true',
-                        default=False,
-                        help='Enable an expansion.')
-    parser.add_argument('-d', '--disableexpansion', action='store_true',
-                        default=False,
-                        help='Disable an expansion.')
+    cmds = parser.add_mutually_exclusive_group(required=True)
+    cmds.add_argument('-n', '--newplayer', type=str, default=None,
+                      nargs='+',
+                      help='Add a new player.')
+    cmds.add_argument('-e', '--enableexpansion', action='store_true',
+                      default=False,
+                      help='Enable an expansion.')
+    cmds.add_argument('-d', '--disableexpansion', action='store_true',
+                      default=False,
+                      help='Disable an expansion.')
 
     return parser.parse_args()
 
