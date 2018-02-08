@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3 Series
+
+### 0.3.0 (future)
+
+#### Enhancements
+
+* new `manage_database.py` script to create and maintain the database
+
 ## 0.2 Series
 
 ### 0.2.0

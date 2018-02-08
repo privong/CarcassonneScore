@@ -13,7 +13,7 @@ Score keeping software for [Carcassonne](https://boardgamegeek.com/boardgame/822
 Before your first game you will need to initialize the sqlite database:
 
 ```
-$ python create_database.py
+$ python manage_database.py --init
 ```
 
 ### Score keeping
@@ -28,13 +28,13 @@ This launches the interactive shell. Press `?` for a list of commands.
 
 ### Database Maintenance
 
-To update the database (add new players toggle availability of expansions), use the `update_database.py` command. For example, to add a new player:
+To update the database (add new players toggle availability of expansions), use the `manage_database.py` command. For example, to add a new player:
 
 ```
-$ python update_database.py -n NEW PLAYER
+$ python manage_database.py -n NEW PLAYER
 ```
 
-Use `python update_database.py -h` to see the full list of options.
+Use `python manage_database.py -h` to see the full list of options.
 
 
 ### Analysis
