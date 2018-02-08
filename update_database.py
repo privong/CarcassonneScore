@@ -45,6 +45,38 @@ scoring database.")
     return parser.parse_args()
 
 
+def getExpans(cur, active=True):
+    """
+    Get a list of (in)active expansions
+    """
+
+    command = 'SELECT expansionID,name FROM expansions WHERE active='
+    if active:
+        command = command + '1'
+    else:
+        command = command + '0'
+
+    return cur.execute(command).fetchall()
+
+
+def toggleExpan(cur, ID, activate=True):
+    """
+    Flip the 
+    """
+    command = 'UPDATE expansions SET active='
+    if activate:
+        command = command + '1'
+    elif not activate:
+        command = command + '0'
+    else:
+        sys.stderr.write("What have you done?\n")
+        sys.exit(-1)
+
+    command = command + ' where expansionID={0:1.0f}'.format(ID)
+
+    cur.execute(command)
+
+
 def main():
     """
     main routine
@@ -71,6 +103,38 @@ def main():
             elif re.match('n', ans, re.IGNORECASE):
                 sys.stdout.write('Canceling.\n')
                 VALID = True
+
+    if args.enableexpansion:
+        expans = getExpans(cur, active=False)
+        kwds = ("enable", "inactive")
+        activate = True
+    elif args.disableexpansion:
+        expans = getExpans(cur, active=True)
+        kwds = ("disable", "active")
+        activate = False
+
+    if args.enableexpansion or args.disableexpansion:
+        expnumlist = []
+        for expan in expans:
+            expnumlist.append(int(expan[0]))
+            sys.stdout.write("{0:1.0f}) ".format(expan[0]) + expan[1] + "\n")
+        try:
+            toggleexp = input("Please enter the " + kwds[1] + ' expansion to ' + kwds[0] + ': ')
+            if not list:
+                sys.stderr.write("No expansions specified. Exiting.\n")
+        except (EOFError, KeyboardInterrupt):
+            conn.close()
+            sys.exit()
+        #TODO actually update the expansions
+        try:
+            toggleexp = int(toggleexp)
+        except:
+            sys.stderr.write("Error: invalid input. Please enter a number from the list next time.\n")
+            sys.exit()
+        if toggleexp not in expnumlist:
+            sys.stderr.write("Error: invalid input. Please enter a number from the list next time.\n")
+            sys.exit()
+        toggleExpan(cur, toggleexp, activate=activate)
 
     conn.commit()
     conn.close()
