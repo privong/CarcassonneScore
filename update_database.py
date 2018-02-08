@@ -61,7 +61,7 @@ def getExpans(cur, active=True):
 
 def toggleExpan(cur, ID, activate=True):
     """
-    Flip the 
+    Change the active status for an expansion
     """
     command = 'UPDATE expansions SET active='
     if activate:
