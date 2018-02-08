@@ -22,7 +22,7 @@ import argparse
 import sys
 import cgame
 
-__version__ = "0.1.1"
+__version__ = "0.3.1"
 
 def getargs():
     """

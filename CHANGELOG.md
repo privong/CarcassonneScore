@@ -2,6 +2,12 @@
 
 ## 0.3 Series
 
+### 0.3.1
+
+#### Bugfix
+
+* Correct version number in source code
+
 ### 0.3.0
 
 #### Enhancements
