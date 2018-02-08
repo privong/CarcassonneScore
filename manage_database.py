@@ -48,7 +48,7 @@ scoring database.")
     return parser.parse_args()
 
 
-def initializeDB(c):
+def initializeDB(c. DBVER):
     """
     Initialize Database
     """
@@ -227,6 +227,8 @@ def initializeDB(c):
                                                "Garden",
                                                0,
                                                "")''')
+    
+    c.execute('PRAGMA user_version={0:1.0f}'.format(DBVER))
 
 
 def getExpans(cur, active=True):
@@ -268,17 +270,20 @@ def main():
 
     args = parseArgs()
 
-    if args.init and os.path.isfile('CarcassonneScore.db'):
-        sys.stderr.write("Error: 'CarcassonneScore.db' already exists. Exiting.\n")
+    DBNAME = 'CarcassonneScore.db'
+    DBVER = 0 
+
+    if args.init and os.path.isfile(DBNAME):
+        sys.stderr.write("Error: '" + DBNAME + "' already exists. Exiting.\n")
         sys.exit()
 
-    conn = sqlite3.connect('CarcassonneScore.db')
+    conn = sqlite3.connect(DBNAME)
     cur = conn.cursor()
 
     VALID = False
 
     if args.init:
-        initializeDB(cur)
+        initializeDB(cur, DBVER)
     elif args.newplayer:
         pname = ' '.join(args.newplayer)
         sys.stdout.write("Adding new player: " + pname)
