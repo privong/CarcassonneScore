@@ -18,8 +18,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os as _os
 import re as _re
 import sys as _sys
+import configparser as _configparser
 from datetime import datetime as _datetime
 import sqlite3 as _sqlite3
 import numpy as _np
@@ -30,7 +32,7 @@ class cgame:
     Carcassonne game object
     """
 
-    def __init__(self):
+    def __init__(self, config='CarcassonneScore.db'):
         """
         Initialize some variables and set up a game
         """
@@ -42,11 +44,26 @@ class cgame:
                          ('q', 'quit (will be removed for real gameplay'),
                          ('?', 'print help')]
 
-        self.conn = _sqlite3.connect('CarcassonneScore.db')
+        self.loadConfig(config)
+
+        self.conn = _sqlite3.connect(self.config.get('CarcassonneScore', 'DBNAME'))
         self.cur = self.conn.cursor()
 
         self.timefmt = "%Y-%m-%dT%H:%M:%S"
         self.setupGame()
+
+
+    def loadConfig(self, cfile):
+        """
+        Load configuration file
+        """
+
+        if not _os.path.isfile(cfile):
+            _sys.stderr.write("Error: could not find configuration file '" + cfile + "'\n")
+            _sys.exit()
+
+        self.config = _configparser.RawConfigParser()
+        self.config.read(cfile)
 
 
     def showCommands(self):
