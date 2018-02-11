@@ -33,9 +33,16 @@ def loadConfig(cfile):
 
     if not os.path.isfile(cfile):
         sys.stderr.write("Error: could not find configuration file '" + cfile + "'\n")
-        sys.exit()
+        if os.path.isfile('CarcassonneScore.conf.example'):
+            sys.stderr.write("Copying 'CarcassonneScore.conf.example' to 'CarcassonneScore.conf'.\n")
+            import shutil
+            shutil.copyfile('CarcassonneScore.conf.example',
+                            'CarcassonneScore.conf')
+        else:
+            sys.stderr.write("Error: cannot find default configuration file 'CarcassonneScore.conf.example' to copy.\n")
 
-    config = configparser.read(cfile)
+    config = configparser.RawConfigParser()
+    config.read(cfile)
 
     return config
 

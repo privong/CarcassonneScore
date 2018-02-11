@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4 Series
+
+### 0.4.0
+
+#### Enhancements
+
+* add a configuration file specifying the database location
+
 ## 0.3 Series
 
 ### 0.3.3 (21 February 2018)
