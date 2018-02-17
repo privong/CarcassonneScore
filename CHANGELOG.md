@@ -4,19 +4,19 @@
 
 ### 0.3.3 (in progress)
 
-#### Bugfixes
+#### Bug fixes
 
 * properly count the starting tile
 
 ### 0.3.2
 
-#### Bugfix
+#### Bug fixes
 
 * syntax error in `manage_database.py`
 
 ### 0.3.1
 
-#### Bugfix
+#### Bug fixes
 
 * Correct version number in source code
 
@@ -31,7 +31,7 @@
 
 ### 0.2.0
 
-#### Bugfixes
+#### Bug fixes
 
 * check inputs
 
@@ -45,7 +45,7 @@
 
 ### 0.1.1
 
-#### Bugfixes
+#### Bug fixes
 
 * Add missing score type
 
