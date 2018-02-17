@@ -2,6 +2,12 @@
 
 ## 0.3 Series
 
+### 0.3.3 (in progress)
+
+#### Bugfixes
+
+* properly count the starting tile
+
 ### 0.3.2
 
 #### Bugfix

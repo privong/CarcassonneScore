@@ -67,7 +67,7 @@ class cgame:
         # game state information
         self.state = 0  # 0 for main game, 1 for postgame, 2 for ended game
         self.nscore = 0
-        self.ntile = 0  # number of tiles played
+        self.ntile = 1  # number of tiles played
         self.nbuilder = 0   # number of tiles placed due to builders
         self.totaltiles = 72    # may be increased by expansions
 
