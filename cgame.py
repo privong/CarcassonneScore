@@ -363,7 +363,7 @@ class cgame:
                 prompt = "postgame > "
             else:
                 player = self.getCurrentPlayer()
-                prompt = "round: {0:d}, turn: {1:d} ".format(int(_np.floor((self.ntile-self.nbuilder) / len(self.players))),
+                prompt = "round: {0:d}, turn: {1:d} ".format(int(_np.floor((self.ntile-self.nbuilder-1) / len(self.players))),
                                                                self.ntile-self.nbuilder)
                 prompt = prompt + "(" + player[1] + ") > "
 
@@ -456,4 +456,4 @@ class cgame:
         Return the current player, determined by the turn number
         """
 
-        return self.players[int((self.ntile - self.nbuilder) % len(self.players))]
+        return self.players[int((self.ntile - self.nbuilder - 1) % len(self.players))]
