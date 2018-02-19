@@ -7,6 +7,7 @@
 #### Bug fixes
 
 * properly count the starting tile
+* fix labeling issue in analysis script
 
 ### 0.3.2
 
