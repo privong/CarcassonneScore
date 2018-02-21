@@ -238,10 +238,13 @@ class cgame:
             scoreplayers = input("Please enter the numbers for the players who scored: ")
             try:
                 score['playerIDs'] = [int(x) for x in scoreplayers.split()]
-                if len(score['playerIDs']):
-                    VALID = True
-                else:
+                if not len(score['playerIDs']):
                     _sys.stderr.write("There must be at least one player.\n")
+                    continue
+                elif self.checkPlayers(score['playerIDs']):
+                    _sys.stderr.write("At least one player entered is not playing this game.\n")
+                else:
+                    VALID = True
             except:
                 _sys.stderr.write("Error, could not parse players list.\n")
                 continue
@@ -423,8 +426,10 @@ class cgame:
         if self.state < 2:
             self.commands = [('r', 'record score'),
                              ('e', 'end game (or end play if already in postgame scoring)'),
-                             ('s', '(current) score and game status'),
-                             ('?', 'print help')]
+                             ('s', '(current) score and game status')]
+            if 2 in self.expansionIDs:
+                self.commands.append(('t', 'score trade goods'))
+            self.commands.append(('?', 'print help'))
 
             _sys.stdout.write("At the end of regulation... ")
             self.printStatus(tilestats=False, sort=True)
@@ -457,3 +462,22 @@ class cgame:
         """
 
         return self.players[int((self.ntile - self.nbuilder - 1) % len(self.players))]
+
+
+    def checkPlayers(self, trial):
+        """
+        Check to make sure all members of `trial` are in `comp`. If so, return
+        0. Otherwise return a list containing the missing members.
+        """
+
+        playerIDs = [x[0] for x in self.players]
+
+        missing = []
+        for obj in trial:
+            if obj not in playerIDs:
+                missing.append(obj)
+
+        if len(missing):
+            return missing
+        else:
+            return 0

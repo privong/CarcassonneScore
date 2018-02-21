@@ -8,6 +8,7 @@
 
 * properly count the starting tile
 * fix labeling issue in analysis script
+* check validity of player IDs when a score is entered
 
 ### 0.3.2
 
