@@ -4,6 +4,10 @@
 
 ### 0.3.3 (in progress)
 
+#### Enhancements
+
+* Example analysis to show probability distributions of score by score type.
+
 #### Bug fixes
 
 * properly count the starting tile
