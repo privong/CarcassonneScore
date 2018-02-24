@@ -2,6 +2,12 @@
 
 ## 0.3 Series
 
+### 0.3.4 (in progress)
+
+#### Enhancements
+
+* analysis script to look at a player's scoring trends with time
+
 ### 0.3.3 (21 February 2018)
 
 #### Enhancements

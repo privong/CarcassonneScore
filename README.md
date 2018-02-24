@@ -39,4 +39,4 @@ Use `python manage_database.py -h` to see the full list of options.
 
 ### Analysis
 
-A sample analysis jupyter notebook and a sample sqlite database containing one game is available in the `analysis/` directory.
+Some jupyter notebooks with sample analysis and a sample sqlite database containing one game is available in the `analysis/` directory.
