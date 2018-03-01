@@ -2,7 +2,7 @@
 
 ## 0.3 Series
 
-### 0.3.4 (in progress)
+### 0.3.4 (28 February 2018)
 
 #### Enhancements
 
