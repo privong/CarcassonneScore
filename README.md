@@ -40,3 +40,7 @@ Use `python manage_database.py -h` to see the full list of options.
 ### Analysis
 
 A sample analysis jupyter notebook and a sample sqlite database containing one game is available in the `analysis/` directory.
+
+### Miscellaneous Utilities
+
+The `utilities/` directory contains scripts which may be useful for correcting issues, but these should not be needed for normal operations.

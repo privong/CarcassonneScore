@@ -7,6 +7,7 @@
 #### Enhancements
 
 * add a configuration file specifying the database location
+* add a utilities directory for scripts which should not be needed for normal operation but may be useful for working around issues.
 
 ## 0.3 Series
 
