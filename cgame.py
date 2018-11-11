@@ -170,7 +170,9 @@ class cgame:
 
     def getExpansions(self):
         """
-        Get a list of playable expansions
+        Get a list of playable expansions.
+        Ask the user which ones are active.
+        Based on the list, add token, tile, and score types to the basic list.
         """
 
         self.expansionIDs = []
@@ -295,7 +297,9 @@ class cgame:
 
         # see which token scored
         # really this should be expanded to allow multiple token types for one score
-        if len(self.tokens) > 1:
+        if score['scoretype'] == 'Trade token':
+            score['tokens'] = 'none'
+        elif len(self.tokens) > 1:
             VALID = False
             while not VALID:
                 for i, token in enumerate(self.tokens):
@@ -444,8 +448,9 @@ class cgame:
             self.commands = [('r', 'record score'),
                              ('e', 'end game (or end play if already in postgame scoring)'),
                              ('s', '(current) score and game status')]
+            # add trade token scoring to the game scoring options
             if 2 in self.expansionIDs:
-                self.commands.append(('t', 'score trade goods'))
+                self.scoretypes.append('Trade token')
             self.commands.append(('?', 'print help'))
 
             _sys.stdout.write("At the end of regulation... ")
