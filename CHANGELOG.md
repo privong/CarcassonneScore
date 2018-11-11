@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4 Series
+
+### 0.4.0
+
+#### Enhancements
+
+* add a configuration file specifying the database location
+* add a utilities directory for scripts which should not be needed for normal operation but may be useful for working around issues.
+* add scoring capability for Trade tokens (Traders & Builders Expanion). Token allocation is not automatically tracked (this can be tracked manually using the scoring comments). Trade token scores are entered during the post-game scoring period.
+
 ## 0.3 Series
 
 ### 0.3.4 (28 February 2018)

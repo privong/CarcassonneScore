@@ -18,8 +18,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os as _os
 import re as _re
 import sys as _sys
+import configparser as _configparser
 from datetime import datetime as _datetime
 import sqlite3 as _sqlite3
 import numpy as _np
@@ -30,7 +32,7 @@ class cgame:
     Carcassonne game object
     """
 
-    def __init__(self):
+    def __init__(self, config='CarcassonneScore.db'):
         """
         Initialize some variables and set up a game
         """
@@ -42,11 +44,26 @@ class cgame:
                          ('q', 'quit (will be removed for real gameplay'),
                          ('?', 'print help')]
 
-        self.conn = _sqlite3.connect('CarcassonneScore.db')
+        self.loadConfig(config)
+
+        self.conn = _sqlite3.connect(self.config.get('CarcassonneScore', 'DBNAME'))
         self.cur = self.conn.cursor()
 
         self.timefmt = "%Y-%m-%dT%H:%M:%S"
         self.setupGame()
+
+
+    def loadConfig(self, cfile):
+        """
+        Load configuration file
+        """
+
+        if not _os.path.isfile(cfile):
+            _sys.stderr.write("Error: could not find configuration file '" + cfile + "'\n")
+            _sys.exit()
+
+        self.config = _configparser.RawConfigParser()
+        self.config.read(cfile)
 
 
     def showCommands(self):
@@ -153,7 +170,9 @@ class cgame:
 
     def getExpansions(self):
         """
-        Get a list of playable expansions
+        Get a list of playable expansions.
+        Ask the user which ones are active.
+        Based on the list, add token, tile, and score types to the basic list.
         """
 
         self.expansionIDs = []
@@ -278,7 +297,9 @@ class cgame:
 
         # see which token scored
         # really this should be expanded to allow multiple token types for one score
-        if len(self.tokens) > 1:
+        if score['scoretype'] == 'Trade token':
+            score['tokens'] = 'none'
+        elif len(self.tokens) > 1:
             VALID = False
             while not VALID:
                 for i, token in enumerate(self.tokens):
@@ -427,8 +448,9 @@ class cgame:
             self.commands = [('r', 'record score'),
                              ('e', 'end game (or end play if already in postgame scoring)'),
                              ('s', '(current) score and game status')]
+            # add trade token scoring to the game scoring options
             if 2 in self.expansionIDs:
-                self.commands.append(('t', 'score trade goods'))
+                self.scoretypes.append('Trade token')
             self.commands.append(('?', 'print help'))
 
             _sys.stdout.write("At the end of regulation... ")

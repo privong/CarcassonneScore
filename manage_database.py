@@ -21,8 +21,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import os
 import argparse
+import configparser
 import re
 import sqlite3
+
+
+def loadConfig(cfile):
+    """
+    Load configuration file
+    """
+
+    if not os.path.isfile(cfile):
+        sys.stderr.write("Error: could not find configuration file '" + cfile + "'\n")
+        if os.path.isfile('CarcassonneScore.conf.example'):
+            sys.stderr.write("Copying 'CarcassonneScore.conf.example' to 'CarcassonneScore.conf'.\n")
+            import shutil
+            shutil.copyfile('CarcassonneScore.conf.example',
+                            'CarcassonneScore.conf')
+        else:
+            sys.stderr.write("Error: cannot find default configuration file 'CarcassonneScore.conf.example' to copy.\n")
+
+    config = configparser.RawConfigParser()
+    config.read(cfile)
+
+    return config
 
 
 def parseArgs():
@@ -32,6 +54,8 @@ def parseArgs():
 
     parser = argparse.ArgumentParser(description="Update the Carcassonne \
 scoring database.")
+    parser.add_argument('-c', '--config', default='CarcassonneScore.conf',
+                        help='Location of the configuration file.')
     cmds = parser.add_mutually_exclusive_group(required=True)
     cmds.add_argument('--init', default=False, action='store_true',
                       help='Create a fresh database.')
@@ -269,6 +293,8 @@ def main():
     """
 
     args = parseArgs()
+
+    copts = loadConfig(args.config)
 
     DBNAME = 'CarcassonneScore.db'
     DBVER = 0 

@@ -31,6 +31,8 @@ def getargs():
 
     parser = argparse.ArgumentParser(description="Carcassonne score keeping \
 system.")
+    parser.add_argument('-c', '--config', default='CarcassonneScore.conf',
+                        help='Location of the configuration file.')
 
     return parser.parse_args()
 
@@ -42,7 +44,7 @@ def main():
 
     args = getargs()
 
-    mygame = cgame.cgame()
+    mygame = cgame.cgame(config=args.config)
 
     mygame.runGame()
 
