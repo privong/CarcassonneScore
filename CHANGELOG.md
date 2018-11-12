@@ -7,6 +7,7 @@
 #### Enhancements
 
 * Add `analysis/README.md` file to briefly explain what the analysis scripts do.
+* Add some additional explanatory text to the main `README.md` file.
 
 #### Bug fixes
 
