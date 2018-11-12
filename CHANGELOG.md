@@ -2,6 +2,12 @@
 
 ## 0.4 Series
 
+### 0.4.1 (in progress)
+
+#### Bug fixes
+
+* Fixed bug where `ScoreProbByType.ipynb` sample script failed when showing PDFs for trade token score distributions.
+
 ### 0.4.0 (11 November 2018)
 
 #### Enhancements
