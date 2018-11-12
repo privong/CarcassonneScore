@@ -4,6 +4,10 @@
 
 ### 0.4.1 (in progress)
 
+#### Enhancements
+
+* Add `analysis/README.md` file to briefly explain what the analysis scripts do.
+
 #### Bug fixes
 
 * Fixed bug where `ScoreProbByType.ipynb` sample script failed when showing PDFs for trade token score distributions.
