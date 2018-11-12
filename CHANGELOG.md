@@ -2,7 +2,7 @@
 
 ## 0.4 Series
 
-### 0.4.0
+### 0.4.0 (11 November 2018)
 
 #### Enhancements
 
