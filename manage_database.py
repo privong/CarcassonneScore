@@ -174,9 +174,9 @@ def initializeDB(c, DBVER):
                                                 "Princess & Dragon",
                                                 0,
                                                 0,
+                                                "Dragon,Fairy",
                                                 "",
-                                                "",
-                                                0,
+                                                30,
                                                 "")''')
     c.execute('''INSERT INTO expansions values (4,
                                                 "The Tower",

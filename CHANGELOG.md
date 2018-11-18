@@ -8,6 +8,7 @@
 
 * Add `analysis/README.md` file to briefly explain what the analysis scripts do.
 * Add some additional explanatory text to the main `README.md` file.
+* Add Expansion 3 (The Princes and the Dragon) to SQL database creation.
 
 #### Bug fixes
 
