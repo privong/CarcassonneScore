@@ -2,6 +2,12 @@
 
 ## 0.4 Series
 
+### 0.4.2 (in progress)
+
+#### Enhancements
+
+* Add turn length vs turn number plot to `analysis/SampleAnalysis-SingleGame.ipynb`.
+
 ### 0.4.1 (18 November 2018)
 
 #### Enhancements
