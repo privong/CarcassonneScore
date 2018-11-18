@@ -270,31 +270,6 @@ class cgame:
             if len(score['playerIDs']) > 1:
                 score['sharedscore'] = 1
 
-        # get points for score
-        VALID = False
-        while not VALID:
-            points = input("Enter the total number of points: ")
-            try:
-                score['points'] = int(points)
-                VALID = True
-            except:
-                _sys.stderr.write("'" + points + "' is not a valid score.\n")
-                continue
-
-        # get the score type
-        VALID = False
-        while not VALID:
-            for i, stype in enumerate(self.scoretypes):
-                _sys.stdout.write("{0:d}) ".format(i+1) + stype + "\n")
-            # here i want a list of valid score types
-            stype = input("Please select the score type: ")
-            try:
-                score['scoretype'] = self.scoretypes[int(stype)-1]
-                VALID = True
-            except:
-                _sys.stderr.write("'" + stype + "' is not a valid score type.\n")
-                continue
-
         # see which token scored
         # really this should be expanded to allow multiple token types for one score
         if score['scoretype'] == 'Trade token':
@@ -313,6 +288,31 @@ class cgame:
                     continue
         else:
             score['tokens'] = self.tokens[0]
+
+        # get the score type
+        VALID = False
+        while not VALID:
+            for i, stype in enumerate(self.scoretypes):
+                _sys.stdout.write("{0:d}) ".format(i+1) + stype + "\n")
+            # here i want a list of valid score types
+            stype = input("Please select the score type: ")
+            try:
+                score['scoretype'] = self.scoretypes[int(stype)-1]
+                VALID = True
+            except:
+                _sys.stderr.write("'" + stype + "' is not a valid score type.\n")
+                continue
+
+        # get points for score
+        VALID = False
+        while not VALID:
+            points = input("Enter the total number of points: ")
+            try:
+                score['points'] = int(points)
+                VALID = True
+            except:
+                _sys.stderr.write("'" + points + "' is not a valid score.\n")
+                continue
 
         score['comments'] = input("Enter any comments you would like saved (a single line): ")
 
