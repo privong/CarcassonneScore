@@ -455,7 +455,9 @@ class cgame:
 
     def advanceState(self):
         """
-        End the main part of play or finish the game
+        End the main part of play or finish the game.
+        Does not change the turn number, so turn should be ended before ending
+        the game.
         """
 
         self.state += 1
