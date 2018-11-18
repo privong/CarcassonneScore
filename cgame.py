@@ -198,11 +198,15 @@ class cgame:
                         _sys.stderr.write("Error: input must be a list of integers separated by spaces.\n")
                 for expanID in expanIDs:
                     matched = False
-                    # add the builder cmd if Traders & Builders is used
                     if expanID == 2:
+                        # add the builder cmd if Traders & Builders is used
                         self.commands.append(('b', 'additional turn for a player due to a builder (use for the 2nd play by a player)'))
                     elif expanID == 5:
+                        # add Abbey placement command
                         self.commands.append(('a', 'Player places an abbey tile instead of a tile drawn from the pile'))
+                    elif expanID == 101:
+                        # decrement totaltiles because the base pack starting tile is not used
+                        self.totaltiles -= 1
                     for dbexpan in dbexpans:
                         if expanID == dbexpan[0]:
                             self.expansionIDs.append(expanID)

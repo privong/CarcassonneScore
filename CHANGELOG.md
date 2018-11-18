@@ -16,7 +16,8 @@
 
 * Fixed bug where `ScoreProbByType.ipynb` sample script failed when showing PDFs for trade token score distributions.
 * Use `ORDER BY` in some analysis queries to ensure turn/score information is returned in the proper order.
-* Minor plotting code updates in analysis to fix deprecations in matplotlib.
+* Minor plotting code updates in analysis to fix depredations in matplotlib.
+* Fix off-by-one error in number of tiles remaining which occurs when The River expansion is in use.
 
 ### 0.4.0 (11 November 2018)
 
@@ -24,7 +25,7 @@
 
 * add a configuration file specifying the database location
 * add a utilities directory for scripts which should not be needed for normal operation but may be useful for working around issues.
-* add scoring capability for Trade tokens (Traders & Builders Expanion). Token allocation is not automatically tracked (this can be tracked manually using the scoring comments). Trade token scores are entered during the post-game scoring period.
+* add scoring capability for Trade tokens (Traders & Builders Expansion). Token allocation is not automatically tracked (this can be tracked manually using the scoring comments). Trade token scores are entered during the post-game scoring period.
 
 ## 0.3 Series
 
