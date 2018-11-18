@@ -125,6 +125,8 @@ class cgame:
         self.conn.commit()
 
         self.gameID = gID[0]
+        
+        _sys.stdout.write("Start game #{0:d} in ".format(self.gameID) + location + "\n")
 
 
     def getPlayers(self):
