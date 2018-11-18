@@ -86,6 +86,7 @@ class cgame:
         self.nscore = 0
         self.ntile = 1  # number of tiles played
         self.nbuilder = 0   # number of tiles placed due to builders
+        self.nabbey = 0     # number of Abbey tiles played
         self.totaltiles = 72    # may be increased by expansions
 
         self.tokens = ["Meeple"]
@@ -200,6 +201,8 @@ class cgame:
                     # add the builder cmd if Traders & Builders is used
                     if expanID == 2:
                         self.commands.append(('b', 'additional turn for a player due to a builder (use for the 2nd play by a player)'))
+                    elif expanID == 5:
+                        self.commands.append(('a', 'Player places an abbey tile instead of a tile drawn from the pile'))
                     for dbexpan in dbexpans:
                         if expanID == dbexpan[0]:
                             self.expansionIDs.append(expanID)
@@ -345,9 +348,11 @@ class cgame:
         return 0
 
 
-    def advanceTurn(self, builder=False):
+    def advanceTurn(self, builder=False, abbey=False):
         """
         Make a new entry in the turns table
+        - builder: if True, give the user another turn
+        - abbey: if True, the turn is advanced as normal, but don't increment the number of tiles
         """
 
         cmdtime = _datetime.utcnow().strftime(self.timefmt)
@@ -366,7 +371,12 @@ class cgame:
         self.cur.execute(command)
         self.conn.commit()
 
-        self.ntile += 1
+        # only increment the number of tiles played if the player did not play an Abbey
+        if not abbey:
+            self.ntile += 1
+        else:
+            self.nabbey += 1
+
         if builder:
             self.nbuilder += 1
 
@@ -407,11 +417,13 @@ class cgame:
                 else:
                     self.printStatus(tilestats=True)
             elif _re.match('n', cmd, _re.IGNORECASE):
-                self.advanceTurn(builder=False)
+                self.advanceTurn(builder=False, abbey=False)
             elif _re.match('r', cmd, _re.IGNORECASE):
                 self.recordScore()
             elif _re.match('b', cmd, _re.IGNORECASE):
-                self.advanceTurn(builder=True)
+                self.advanceTurn(builder=True, abbey=False)
+            elif _re.match('a', cmd, _re.IGNORECASE):
+                self.advanceTurn(builder=False, abbey=True)
             elif _re.match('\?', cmd, _re.IGNORECASE):
                 self.showCommands()
             else:

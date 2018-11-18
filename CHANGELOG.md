@@ -10,6 +10,7 @@
 * Add some additional explanatory text to the main `README.md` file.
 * Add Expansion 3 (The Princes and the Dragon) to SQL database creation.
 * Reorder score recording questions to better match how players seem to naturally report scores.
+* Add a command to note that a player played an Abbey tile (if "Abbey & Mayor" expansion is in play). This increments the turn as normal but does not increment the number of tiles played (so that the tiles remaining count remains accurate).
 
 #### Bug fixes
 
