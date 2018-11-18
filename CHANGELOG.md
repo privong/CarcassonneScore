@@ -14,6 +14,8 @@
 #### Bug fixes
 
 * Fixed bug where `ScoreProbByType.ipynb` sample script failed when showing PDFs for trade token score distributions.
+* Use `ORDER BY` in some analysis queries to ensure turn/score information is returned in the proper order.
+* Minor plotting code updates in analysis to fix deprecations in matplotlib.
 
 ### 0.4.0 (11 November 2018)
 
