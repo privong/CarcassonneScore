@@ -7,6 +7,7 @@
 #### Enhancements
 
 * Add turn length vs turn number plot to `analysis/SampleAnalysis-SingleGame.ipynb`.
+* Reorder game initilization so that most of the info can be entered before the player order is determined.
 
 ### 0.4.1 (18 November 2018)
 

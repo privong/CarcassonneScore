@@ -93,16 +93,6 @@ class cgame:
         self.tiletypes = []
         self.scoretypes = ["Meadow", "City", "Road", "Monastery"]
 
-        # get players for this game
-        _sys.stdout.write("Collecting player information...\n")
-        while self.getPlayers():
-            continue
-
-        # get expansions used for this game
-        _sys.stdout.write("Collecting expansion information...\n")
-        while self.getExpansions():
-            continue
-
         # get general game info (do this after expansions because
         # expansion info is entered into the game table)
         while self.gameInfo():
@@ -115,6 +105,16 @@ class cgame:
         """
 
         location = input("Where is the game being played? ")
+
+        # get expansions used for this game
+        _sys.stdout.write("Collecting expansion information...\n")
+        while self.getExpansions():
+            continue
+
+        # get players for this game
+        _sys.stdout.write("Collecting player information...\n")
+        while self.getPlayers():
+            continue
 
         starttime = _datetime.utcnow().strftime(self.timefmt)
 
