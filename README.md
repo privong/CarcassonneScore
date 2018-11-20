@@ -6,7 +6,9 @@ The location of this database defaults to `CarcassonneScore.db`, but can be spec
 
 ## Requirements
 
-* python 3 (currently tested on python 3.7.x, but has previously worked with python 3.6.x)
+Detailed information in [`requirements.txt`](requirements.txt)
+
+* python 3
 * numpy
 * matplotlib (only needed for for analysis scripts)
 

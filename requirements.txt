@@ -1,0 +1,4 @@
+CarcassonneScore
+python>=3.6
+numpy
+matplotlib>=2.0
