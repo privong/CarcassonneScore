@@ -10,6 +10,7 @@
 * Reorder game initilization so that most of the info can be entered before the player order is determined.
 * Announce gameID and location at the start.
 * Status printout now shows time elapsed since end of previous turn.
+* In the status message, showing the number of tiles played/remaining and the time elapsed since the end of the previous turn is now controlled via options in the configuration file.
 
 #### Bug fixes
 

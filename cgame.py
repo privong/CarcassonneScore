@@ -65,6 +65,11 @@ class cgame:
         self.config = _configparser.RawConfigParser()
         self.config.read(cfile)
 
+        # set up a preferences dictionary
+        self.preferences = {}
+        self.preferences['SHOWTILES'] = self.config['Status'].getboolean('SHOWTILES')
+        self.preferences['SHOWTIME'] = self.config['Status'].getboolean('SHOWTIME')
+
 
     def showCommands(self):
         """
@@ -432,8 +437,8 @@ class cgame:
                 if self.state:
                     self.printStatus(tilestats=False)
                 else:
-                    self.printStatus(tilestats=True,
-                                     timestats=True)
+                    self.printStatus(tilestats=self.preferences['SHOWTILES'],
+                                     timestats=self.preferences['SHOWTIME'])
             elif _re.match('n', cmd, _re.IGNORECASE):
                 self.advanceTurn(builder=False,
                                  abbey=False)
@@ -512,9 +517,11 @@ class cgame:
 
             _sys.stdout.write('\t' + player[1]+ ': {0:1.0f}'.format(score) + '\n')
 
+        _sys.stdout.write('\n')
+
         if tilestats:
-            _sys.stdout.write("\n{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
-                                                                                        self.totaltiles - self.ntile))
+            _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
+                                                                                      self.totaltiles - self.ntile))
 
         if timestats:
             gamedt = _datetime.utcnow() - self.starttime

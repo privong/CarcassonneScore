@@ -1,2 +1,6 @@
 [CarcassonneScore]
 DBNAME = CarcassonneScore.db
+
+[Status]
+SHOWTILES = true
+SHOWTIME = true
