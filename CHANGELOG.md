@@ -11,6 +11,10 @@
 * Announce gameID and location at the start.
 * Status printout now shows time elapsed since end of previous turn.
 
+#### Bug fixes
+
+* Fixed tile counting bug when an Abbey is played.
+
 ### 0.4.1 (18 November 2018)
 
 #### Enhancements

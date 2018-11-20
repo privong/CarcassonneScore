@@ -376,6 +376,8 @@ class cgame:
         command = command + cmdtime + '"'
         if builder:
             bID = 1
+        elif abbey:
+            bID = 2
         else:
             bID = 0
 
@@ -528,7 +530,7 @@ class cgame:
         Return the current player, determined by the turn number
         """
 
-        return self.players[int((self.ntile - self.nbuilder - 1) % len(self.players))]
+        return self.players[int((self.ntile + self.nabbey - self.nbuilder - 1) % len(self.players))]
 
 
     def checkPlayers(self, trial):
