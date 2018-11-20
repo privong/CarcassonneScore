@@ -116,7 +116,9 @@ class cgame:
         while self.getPlayers():
             continue
 
-        starttime = _datetime.utcnow().strftime(self.timefmt)
+        self.starttime = _datetime.utcnow()
+        self.lastturn = self.starttime
+        starttime = self.starttime.strftime(self.timefmt)
 
         self.cur.execute('INSERT INTO games (location, starttime, expansions) VALUES ("' + location + '","' + starttime + '","' + ','.join(["{0:d}".format(x) for x in self.expansionIDs]) + '")')
 
@@ -126,7 +128,10 @@ class cgame:
 
         self.gameID = gID[0]
         
-        _sys.stdout.write("Start game #{0:d} in ".format(self.gameID) + location + "\n")
+        _sys.stdout.write("Starting game #{0:d}".format(self.gameID))
+        if location:
+            _sys.stdout.write(" in " + location)
+        _sys.stdout.write(".\n")
 
 
     def getPlayers(self):
@@ -351,6 +356,9 @@ class cgame:
         # now increment the score number
         self.nscore += 1
 
+        # newline after score for aesthetics
+        _sys.stdout.write("\n")
+
         return 0
 
 
@@ -361,7 +369,8 @@ class cgame:
         - abbey: if True, the turn is advanced as normal, but don't increment the number of tiles
         """
 
-        cmdtime = _datetime.utcnow().strftime(self.timefmt)
+        self.lastturn = _datetime.utcnow()
+        cmdtime = self.lastturn.strftime(self.timefmt)
 
         command = '''INSERT INTO turns VALUES ({0:d}, {1:d}, "'''.format(self.gameID, self.ntile)
         command = command + cmdtime + '"'
@@ -421,15 +430,19 @@ class cgame:
                 if self.state:
                     self.printStatus(tilestats=False)
                 else:
-                    self.printStatus(tilestats=True)
+                    self.printStatus(tilestats=True,
+                                     timestats=True)
             elif _re.match('n', cmd, _re.IGNORECASE):
-                self.advanceTurn(builder=False, abbey=False)
+                self.advanceTurn(builder=False,
+                                 abbey=False)
             elif _re.match('r', cmd, _re.IGNORECASE):
                 self.recordScore()
             elif _re.match('b', cmd, _re.IGNORECASE):
-                self.advanceTurn(builder=True, abbey=False)
+                self.advanceTurn(builder=True,
+                                 abbey=False)
             elif _re.match('a', cmd, _re.IGNORECASE):
-                self.advanceTurn(builder=False, abbey=True)
+                self.advanceTurn(builder=False,
+                                 abbey=True)
             elif _re.match('\?', cmd, _re.IGNORECASE):
                 self.showCommands()
             else:
@@ -477,14 +490,18 @@ class cgame:
             self.printStatus(tilestats=False, sort=True)
 
 
-    def printStatus(self, tilestats=False, sort=False):
+    def printStatus(self, tilestats=False, timestats=False, sort=False):
         """
         Print the total score (current or final) for the specified gameID
         tilestats controls printing info on the number of tiles played/remaining
         sort will trigger sorting by score
+        timestats will print out some information about time elapsed (game and turn)
         """
 
-        _sys.stdout.write('\nScore\n')
+        _sys.stdout.write('\n')
+        if not self.state:
+            _sys.stdout.write('Current ')
+        _sys.stdout.write('Score\n')
 
         for player in self.players:
             a = self.cur.execute('SELECT points FROM scores WHERE gameID={0:d} and playerID={1:d}'.format(self.gameID, player[0]))
@@ -494,8 +511,16 @@ class cgame:
             _sys.stdout.write('\t' + player[1]+ ': {0:1.0f}'.format(score) + '\n')
 
         if tilestats:
-            _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
-                                                                                      self.totaltiles - self.ntile))
+            _sys.stdout.write("\n{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
+                                                                                        self.totaltiles - self.ntile))
+
+        if timestats:
+            gamedt = _datetime.utcnow() - self.starttime
+            turndt = _datetime.utcnow() - self.lastturn
+
+            #_sys.stdout.write('Game time elapsed: ' + gamedt + '\n')
+            _sys.stdout.write('Time since last turn: {0:1.0f} seconds'.format(turndt.total_seconds()) + '\n\n')
+
 
 
     def getCurrentPlayer(self):
