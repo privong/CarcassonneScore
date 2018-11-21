@@ -191,7 +191,7 @@ def initializeDB(c, DBVER):
                                                 0,
                                                 1,
                                                 "Mayor,Wagon,Barn",
-                                                "",
+                                                "Abbey",
                                                 12,
                                                 "Abbey")''')
     c.execute('''INSERT INTO expansions values (6,
