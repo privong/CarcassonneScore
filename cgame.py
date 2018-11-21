@@ -327,8 +327,12 @@ class cgame:
         while not VALID:
             points = input("Enter the total number of points: ")
             try:
-                score['points'] = int(points)
-                VALID = True
+                pts = int(points)
+                if pts >= 0:
+                    score['points'] = int(points)
+                    VALID = True
+                else:
+                    _sys.stderr.write("Score cannot be negative.\n")
             except:
                 _sys.stderr.write("'" + points + "' is not a valid score.\n")
                 continue
