@@ -2,6 +2,12 @@
 
 ## 0.4 Series
 
+### 0.4.3 (in progress)
+
+#### Bug Fixes
+
+* Update single-game and score distribution demo scripts to generalize color cycler and hatching for larger numbers of players.
+
 ### 0.4.2 (21 November 2018)
 
 #### Enhancements
