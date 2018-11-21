@@ -18,6 +18,8 @@
 * Fixed tile counting bug when an Abbey is played.
 * Fixed missing Abbey score type when Expansion 5 is used.
   This requres running the following command in sqlite3: `update expansions set scoretypes="Abbey" where expansionID=5;`
+* Include played Abbey tiles in the total number of tiles played.
+
 
 ### 0.4.1 (18 November 2018)
 

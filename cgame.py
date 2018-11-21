@@ -520,7 +520,7 @@ class cgame:
         _sys.stdout.write('\n')
 
         if tilestats:
-            _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile,
+            _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile + self.nabbey,
                                                                                       self.totaltiles - self.ntile))
 
         if timestats:
