@@ -12,6 +12,7 @@
 * Status printout now shows time elapsed since end of previous turn.
 * In the status message, showing the number of tiles played/remaining and the time elapsed since the end of the previous turn is now controlled via options in the configuration file.
 * Add `requirements.txt` file.
+* Print the player's name when confirming a score entry.
 
 #### Bug fixes
 
@@ -20,6 +21,7 @@
   This requres running the following command in sqlite3: `update expansions set scoretypes="Abbey" where expansionID=5;`
 * Include played Abbey tiles in the total number of tiles played.
 * Ensure negative scores cannot be entered.
+* Print all players who are scoring when confirming.
 
 ### 0.4.1 (18 November 2018)
 

@@ -251,6 +251,16 @@ class cgame:
         return 0
 
 
+    def getPlayerName(self, playerID):
+        """
+        Given a playerID, return a player's name from the database.
+        """
+
+        playerName = self.cur.execute('''SELECT name FROM players WHERE playerID={0:1.0f}'''.format(playerID)).fetchall()[0]
+
+        return playerName[0]
+
+
     def recordScore(self):
         """
         Record a score event in the game
@@ -340,7 +350,8 @@ class cgame:
         score['comments'] = input("Enter any comments you would like saved (a single line): ")
 
         # check score input to make sure it's correct
-        _sys.stdout.write('Player {0:d} scores {1:d} points on a '.format(score['playerIDs'][0], score['points']) + score['scoretype'] + '.\n')
+        _sys.stdout.write(', '.join([self.getPlayerName(x) for x in score['playerIDs']]) + ' ')
+        _sys.stdout.write('scores {0:d} points on a '.format(score['points']) + score['scoretype'] + '.\n')
         answer = input("Is this correct? (y/n) ")
         if not _re.match('y', answer, _re.IGNORECASE):
             return 1
