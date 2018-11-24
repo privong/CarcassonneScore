@@ -350,8 +350,10 @@ class cgame:
         score['comments'] = input("Enter any comments you would like saved (a single line): ")
 
         # check score input to make sure it's correct
+        _sys.stdout.write('\n')
         _sys.stdout.write(', '.join([self.getPlayerName(x) for x in score['playerIDs']]) + ' ')
-        _sys.stdout.write('scores {0:d} points on a '.format(score['points']) + score['scoretype'] + '.\n')
+        _sys.stdout.write('scores {0:d} points on a '.format(score['points']) + score['scoretype'])
+        _sys.stdout.write(' with ' + score['tokens'] + '.\n')
         answer = input("Is this correct? (y/n) ")
         if not _re.match('y', answer, _re.IGNORECASE):
             return 1

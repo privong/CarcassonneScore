@@ -4,6 +4,10 @@
 
 ### 0.4.3 (in progress)
 
+#### Enhancements
+
+* Print token type in scoring confirmation message. Update formatting.
+
 #### Bug Fixes
 
 * Update single-game and score distribution demo scripts to generalize color cycler and hatching for larger numbers of players.
