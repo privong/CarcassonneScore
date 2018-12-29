@@ -7,7 +7,9 @@
 #### Enhancements
 
 * Print token type in scoring confirmation message. Update formatting.
-* Add "Hills and & Sheep" Expansion
+* Add "Hills and & Sheep" Expansion.
+  To update your database, run this SQLITE statement:
+  `update expansions set active=1, tokens="Shepherd", scoretypes="Flock", Ntiles=18, tiletypes="Hill,Vineyard" where expansionID=9;`
 
 #### Bug Fixes
 
