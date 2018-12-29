@@ -7,6 +7,7 @@
 #### Enhancements
 
 * Print token type in scoring confirmation message. Update formatting.
+* Add "Hills and & Sheep" Expansion
 
 #### Bug Fixes
 

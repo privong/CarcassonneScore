@@ -222,10 +222,10 @@ def initializeDB(c, DBVER):
                                                 "Hills & Sheep",
                                                 0,
                                                 0,
-                                                "",
-                                                "",
-                                                0,
-                                                "")''')
+                                                "Shepherd",
+                                                "Flock",
+                                                18,
+                                                "Hill,Vineyard")''')
     c.execute('''INSERT INTO expansions values (10,
                                                 "Under the Big Top",
                                                 0,
