@@ -92,6 +92,7 @@ class cgame:
         self.ntile = 1  # number of tiles played
         self.nbuilder = 0   # number of tiles placed due to builders
         self.nabbey = 0     # number of Abbey tiles played
+        self.nhill = 0      # number of tiles hidden under hills
         self.totaltiles = 72    # may be increased by expansions
 
         self.tokens = ["Meeple"]
@@ -216,6 +217,8 @@ class cgame:
                     elif expanID == 5:
                         # add Abbey placement command
                         self.commands.append(('a', 'Player places an abbey tile instead of a tile drawn from the pile'))
+                    elif expanID == 9:
+                        self.commands.append(('h', 'Player places a hill tile'))
                     elif expanID == 101:
                         # decrement totaltiles because the base pack starting tile is not used
                         self.totaltiles -= 1
@@ -384,11 +387,13 @@ class cgame:
         return 0
 
 
-    def advanceTurn(self, builder=False, abbey=False):
+    def advanceTurn(self, builder=False, abbey=False, hill=False):
         """
         Make a new entry in the turns table
         - builder: if True, give the user another turn
         - abbey: if True, the turn is advanced as normal, but don't increment the number of tiles
+        - hill: if True, the turn is advanced as nourmal, but increment by two tiles
+          (hill tile and tile that goes under it)
         """
 
         self.lastturn = _datetime.utcnow()
@@ -419,6 +424,10 @@ class cgame:
         if builder:
             self.nbuilder += 1
 
+        if hill:
+            # advance by an extra tile (that goes under the hill)
+            self.nhill += 1
+
 
     def runGame(self):
         """
@@ -436,7 +445,7 @@ class cgame:
                 prompt = "postgame > "
             else:
                 player = self.getCurrentPlayer()
-                prompt = "round: {0:d}, turn: {1:d} ".format(int(_np.floor((self.ntile-self.nbuilder-1) / len(self.players))),
+                prompt = "round: {0:d}, turn: {1:d} ".format(int(_np.floor((self.ntile-self.nbuilder-self.nhill-1) / len(self.players))),
                                                                self.ntile-self.nbuilder)
                 prompt = prompt + "(" + player[1] + ") > "
 
@@ -467,6 +476,10 @@ class cgame:
             elif _re.match('a', cmd, _re.IGNORECASE):
                 self.advanceTurn(builder=False,
                                  abbey=True)
+            elif _re.match('h', cmd, _re.IGNORECASE):
+                self.advanceTurn(builder=False,
+                                 abbey=False,
+                                 hill=True)
             elif _re.match('\?', cmd, _re.IGNORECASE):
                 self.showCommands()
             else:
@@ -537,7 +550,7 @@ class cgame:
         _sys.stdout.write('\n')
 
         if tilestats:
-            _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile + self.nabbey,
+            _sys.stdout.write("{0:1.0f} tiles played, {1:1.0f} remaining.\n\n".format(self.ntile + self.nabbey + self.nhill,
                                                                                       self.totaltiles - self.ntile))
 
         if timestats:
