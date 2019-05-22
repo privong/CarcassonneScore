@@ -2,7 +2,7 @@
 """
 Class definition for Carcassonne score keeping system.
 
-Copyright 2018 George C. Privon
+Copyright 2018-2019 George C. Privon
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -540,12 +540,19 @@ class cgame:
             _sys.stdout.write('Current ')
         _sys.stdout.write('Score\n')
 
+        tscore = []
+
         for player in self.players:
             a = self.cur.execute('SELECT points FROM scores WHERE gameID={0:d} and playerID={1:d}'.format(self.gameID, player[0]))
             res = a.fetchall()
             score = _np.sum(res)
+            tscore.append((score, player[1]))
 
-            _sys.stdout.write('\t' + player[1]+ ': {0:1.0f}'.format(score) + '\n')
+        if sort:
+            tscore.sort(reverse=True)
+
+        for player in tscore:
+            _sys.stdout.write('\t' + player[1]+ ': {0:1.0f}'.format(player[0]) + '\n')
 
         _sys.stdout.write('\n')
 
