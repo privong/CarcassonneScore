@@ -2,7 +2,7 @@
 
 ## 0.4 Series
 
-### 0.4.3 (in progress)
+### 0.4.3 (22 May 2019)
 
 #### Enhancements
 
@@ -10,6 +10,7 @@
 * Add "Hills and & Sheep" Expansion.
   To update your database, run this SQLITE statement:
   `update expansions set active=1, tokens="Shepherd", scoretypes="Flock", Ntiles=18, tiletypes="Hill,Vineyard" where expansionID=9;`
+* At the end of play and the end of final scoring, print score sorted from highest to lowest score.
 
 #### Bug Fixes
 
