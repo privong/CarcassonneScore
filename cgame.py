@@ -256,6 +256,40 @@ class cgame:
         return 0
 
 
+    def getRandomExpansions(self):
+        """
+        Select a set of random expansions for play.
+        """
+        res = cur.execute('''SELECT DISTINCT expansionID FROM expansions WHERE active=1;''')
+
+        explist = res.fetchall()
+        explist = np.array([x[0] for x in explist])
+
+
+        exps = explist[explist < 100]
+        miniexps = explist[explist >= 100]
+
+        nexp = random.randint(0, len(exps))
+        nminiexp = random.randint(0, len(miniexps))
+
+        print("Selecting {0:d} full expansions and {1:d} mini expansions.".format(nexp,
+                                                                                  nminiexp))
+
+        if nexp:
+            selexp = sorted(random.sample(list(exps), nexp))
+            print("Full expansions: ", selexp)
+        else:
+            selexp = []
+
+        if nminiexp:
+            selminiexp = sorted(random.sample(list(miniexps), nminiexp))
+            print("Mini expansions: ", selminiexp)
+        else:
+            selminiexp = []
+
+        return selexp + selminiexp
+
+
     def getPlayerName(self, playerID):
         """
         Given a playerID, return a player's name from the database.
