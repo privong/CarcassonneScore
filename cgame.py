@@ -32,7 +32,7 @@ class cgame:
     Carcassonne game object
     """
 
-    def __init__(self, config='CarcassonneScore.db'):
+    def __init__(self, args=args):
         """
         Initialize some variables and set up a game
         """
@@ -44,7 +44,9 @@ class cgame:
                          ('q', 'quit (will be removed for real gameplay'),
                          ('?', 'print help')]
 
-        self.loadConfig(config)
+        self.args = args
+
+        self.loadConfig()
 
         self.conn = _sqlite3.connect(self.config.get('CarcassonneScore', 'DBNAME'))
         self.cur = self.conn.cursor()
@@ -53,17 +55,17 @@ class cgame:
         self.setupGame()
 
 
-    def loadConfig(self, cfile):
+    def loadConfig(self):
         """
         Load configuration file
         """
 
-        if not _os.path.isfile(cfile):
-            _sys.stderr.write("Error: could not find configuration file '" + cfile + "'\n")
+        if not _os.path.isfile(self.args.config):
+            _sys.stderr.write("Error: could not find configuration file '" + self.args.config + "'\n")
             _sys.exit()
 
         self.config = _configparser.RawConfigParser()
-        self.config.read(cfile)
+        self.config.read(self.args.config)
 
         # set up a preferences dictionary
         self.preferences = {}
@@ -133,7 +135,7 @@ class cgame:
         self.conn.commit()
 
         self.gameID = gID[0]
-        
+
         _sys.stdout.write("Starting game #{0:d}".format(self.gameID))
         if location:
             _sys.stdout.write(" in " + location)

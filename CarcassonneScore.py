@@ -44,7 +44,7 @@ def main():
 
     args = getargs()
 
-    mygame = cgame.cgame(config=args.config)
+    mygame = cgame.cgame(args=args)
 
     mygame.runGame()
 
