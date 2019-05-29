@@ -2,7 +2,7 @@
 """
 Carcassonne score keeping system.
 
-Copyright 2018 George C. Privon
+Copyright 2018-2019 George C. Privon
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import argparse
 import sys
 import cgame
 
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 
 def getargs():
     """
