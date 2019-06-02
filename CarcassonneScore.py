@@ -33,7 +33,7 @@ def getargs():
 system.")
     parser.add_argument('-c', '--config', default='CarcassonneScore.conf',
                         help='Location of the configuration file.')
-    parser.add_argument(('--random-exp', default=False,
+    parser.add_argument('--random-exp', default=False,
                          help="Select a random set of active expansions and \
 mini-expansions.")
 
