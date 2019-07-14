@@ -395,6 +395,7 @@ class cgame:
         _sys.stdout.write(' with ' + score['tokens'] + '.\n')
         answer = input("Is this correct? (y/n) ")
         if not _re.match('y', answer, _re.IGNORECASE):
+            _sys.stdout.write("Note: score not recorded.\n")
             return 1
 
         # now construct a SQL query

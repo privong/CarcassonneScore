@@ -2,6 +2,12 @@
 
 ## 0.4 Series
 
+### 0.4.x (in progress)
+
+#### Enhancements
+
+* Note when a score has not been recorded.
+
 ### 0.4.3 (22 May 2019)
 
 #### Enhancements
