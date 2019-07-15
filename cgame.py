@@ -32,7 +32,7 @@ class cgame:
     Carcassonne game object
     """
 
-    def __init__(self, args=args):
+    def __init__(self, args=None):
         """
         Initialize some variables and set up a game
         """
@@ -44,6 +44,10 @@ class cgame:
                          ('q', 'quit (will be removed for real gameplay'),
                          ('?', 'print help')]
 
+        if args is None:
+            _sys.stderr.write("Error: must provide a set of arguments when using the cgame class.\n")
+            _sys.stderr.write("Exiting.\n\n")
+            _sys.exit()
         self.args = args
 
         self.loadConfig()
