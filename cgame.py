@@ -2,7 +2,7 @@
 """
 Class definition for Carcassonne score keeping system.
 
-Copyright 2018-2019 George C. Privon
+Copyright 2018-2020 George C. Privon
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -133,7 +133,7 @@ class cgame:
         self.conn.commit()
 
         self.gameID = gID[0]
-        
+
         _sys.stdout.write("Starting game #{0:d}".format(self.gameID))
         if location:
             _sys.stdout.write(" in " + location)
@@ -149,20 +149,23 @@ class cgame:
 
         dbplayers = self.cur.execute('''SELECT * FROM players''').fetchall()
 
-        if len(dbplayers):
+        if dbplayers:
             for dbplayer in dbplayers:
                 _sys.stdout.write("{0:d}) ".format(dbplayer[0]) + dbplayer[1] + '\n')
             VALID = False
             while not VALID:
-                playerinput = input("Please list the IDs for the players in this game (in order of play): ")
+                playerinput = input("Please list the IDs for the players in \
+this game (in order of play): ")
                 try:
                     playerIDs = [int(x) for x in playerinput.split()]
                     VALID = True
                 except:
-                    _sys.stderr.write("Error: input must be a list of integers separated by spaces.\n")
+                    _sys.stderr.write("Error: input must be a list of \
+integers separated by spaces.\n")
 
             if len(playerIDs) < 2:
-                _sys.stderr.write("Playing alone? You need at least one opponent!\n")
+                _sys.stderr.write("Playing alone? You need at least one \
+opponent!\n")
                 return 1
 
             for playerID in playerIDs:
@@ -173,7 +176,8 @@ class cgame:
                         matched = True
                         continue
                 if not matched:
-                    _sys.stderr.write("Error: player ID {0:d} does not match an option from the list.\n".format(playerID))
+                    _sys.stderr.write("Error: player ID {0:d} does not match \
+an option from the list.\n".format(playerID))
                     return 1
         else:
             _sys.stderr.write("Error: players table empty. Exiting.\n")
