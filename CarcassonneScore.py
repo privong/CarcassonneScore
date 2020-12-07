@@ -2,7 +2,7 @@
 """
 Carcassonne score keeping system.
 
-Copyright 2018 George C. Privon
+Copyright 2018-2019 George C. Privon
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import argparse
 import sys
 import cgame
 
-__version__ = "0.4.2"
+__version__ = "0.4.4"
 
 def getargs():
     """
@@ -33,6 +33,9 @@ def getargs():
 system.")
     parser.add_argument('-c', '--config', default='CarcassonneScore.conf',
                         help='Location of the configuration file.')
+    parser.add_argument('--random-exp', default=False,
+                         help="Select a random set of active expansions and \
+mini-expansions.")
 
     return parser.parse_args()
 
@@ -44,7 +47,7 @@ def main():
 
     args = getargs()
 
-    mygame = cgame.cgame(config=args.config)
+    mygame = cgame.cgame(args=args)
 
     mygame.runGame()
 

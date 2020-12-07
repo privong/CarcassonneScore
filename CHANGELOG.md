@@ -2,6 +2,12 @@
 
 ## 0.4 Series
 
+### 0.4.4 (07 December 2020)
+
+#### Enhancements
+
+* Note when a score has not been recorded.
+
 ### 0.4.3 (22 May 2019)
 
 #### Enhancements
