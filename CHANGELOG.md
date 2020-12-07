@@ -2,7 +2,7 @@
 
 ## 0.4 Series
 
-### 0.4.x (in progress)
+### 0.4.4 (07 December 2020)
 
 #### Enhancements
 
