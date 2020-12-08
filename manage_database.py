@@ -251,7 +251,7 @@ def initializeDB(c, DBVER):
                                                "Garden",
                                                0,
                                                "")''')
-    
+
     c.execute('PRAGMA user_version={0:1.0f}'.format(DBVER))
 
 
@@ -297,7 +297,7 @@ def main():
     copts = loadConfig(args.config)
 
     DBNAME = 'CarcassonneScore.db'
-    DBVER = 0 
+    DBVER = 0
 
     if args.init and os.path.isfile(DBNAME):
         sys.stderr.write("Error: '" + DBNAME + "' already exists. Exiting.\n")
