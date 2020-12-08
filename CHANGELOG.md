@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5 Series
+
+### 0.5.0 (in progress)
+
+#### Enhancements
+
+* Add ability to (de)activate players.
+  **NOTE**: If you have been using an earlier version, this requires running `manage_database.py --migrate` to update the database.
+
 ## 0.4 Series
 
 ### 0.4.4 (07 December 2020)

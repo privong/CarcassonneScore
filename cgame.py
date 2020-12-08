@@ -153,7 +153,7 @@ class cgame:
 
         self.players = []
 
-        dbplayers = self.cur.execute('''SELECT * FROM players''').fetchall()
+        dbplayers = self.cur.execute('''SELECT * FROM players WHERE ACTIVE=1''').fetchall()
 
         if dbplayers:
             for dbplayer in dbplayers:

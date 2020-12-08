@@ -59,9 +59,17 @@ scoring database.")
     cmds = parser.add_mutually_exclusive_group(required=True)
     cmds.add_argument('--init', default=False, action='store_true',
                       help='Create a fresh database.')
+    cmds.add_argument('--migrate', default=False, action='store_true',
+                      help='Update database to a new version.')
     cmds.add_argument('-n', '--newplayer', type=str, default=None,
                       nargs='+',
                       help='Add a new player.')
+    cmds.add_argument('-pa', '--playeractivate', action='store_true',
+                      default=False,
+                      help='activate a player.')
+    cmds.add_argument('-pd', '--playerdeactivate', action='store_true',
+                      default=False,
+                      help='Deactivate a player.')
     cmds.add_argument('-e', '--enableexpansion', action='store_true',
                       default=False,
                       help='Enable an expansion.')
@@ -255,6 +263,38 @@ def initializeDB(c, DBVER):
     c.execute('PRAGMA user_version={0:1.0f}'.format(DBVER))
 
 
+def getPlayers(cur, active=True):
+    """
+    Get a list of (in)active expansions
+    """
+
+    command = 'SELECT playerID,name FROM players WHERE active='
+    if active:
+        command = command + '1'
+    else:
+        command = command + '0'
+
+    return cur.execute(command).fetchall()
+
+
+def togglePlayer(cur, ID, activate=True):
+    """
+    Change the active status for a player
+    """
+    command = 'UPDATE players SET active='
+    if activate:
+        command = command + '1'
+    elif not activate:
+        command = command + '0'
+    else:
+        sys.stderr.write("What have you done?\n")
+        sys.exit(-1)
+
+    command = command + ' where playerID={0:1.0f}'.format(ID)
+
+    cur.execute(command)
+
+
 def getExpans(cur, active=True):
     """
     Get a list of (in)active expansions
@@ -287,6 +327,28 @@ def toggleExpan(cur, ID, activate=True):
     cur.execute(command)
 
 
+def migratedb(cur, newDBVER):
+    """
+    Automatically migrate a Carcassonne sqlite database to a newer schema
+    """
+
+    # get USER_VERSION from the Sqlite3 database
+    curDBVER = cur.execute("PRAGMA user_version").fetchall()[0][0]
+
+    # Check if it is the same as the new version
+    # - If it is, print a message that no migration is needed, then exit
+    if curDBVER == newDBVER:
+        sys.stderr.write("Database schema is up to date, no migration needed.\n")
+        sys.exit()
+
+    # If migration is needed, step through each upgrade step and execute it
+    if curDBVER == 0:
+        # make changes from DBVER 0 to DBVER 1
+        cur.execute("ALTER TABLE players ADD COLUMN active INTEGER NOT NULL DEFAULT 1;")
+        cur.execute("PRAGMA user_version={0:d}".format(1))
+        curDBVER = 1
+
+
 def main():
     """
     main routine
@@ -297,7 +359,7 @@ def main():
     copts = loadConfig(args.config)
 
     DBNAME = 'CarcassonneScore.db'
-    DBVER = 0
+    DBVER = 1
 
     if args.init and os.path.isfile(DBNAME):
         sys.stderr.write("Error: '" + DBNAME + "' already exists. Exiting.\n")
@@ -309,7 +371,12 @@ def main():
     VALID = False
 
     if args.init:
-        initializeDB(cur, DBVER)
+        # create initial database
+        initializeDB(cur, 0)
+        # migrate it to the current version
+        migratedb(cur, DBVER)
+    if args.migrate:
+        migratedb(cur, DBVER)
     elif args.newplayer:
         pname = ' '.join(args.newplayer)
         sys.stdout.write("Adding new player: " + pname)
@@ -324,7 +391,14 @@ def main():
             elif re.match('n', ans, re.IGNORECASE):
                 sys.stdout.write('Canceling.\n')
                 VALID = True
-
+    elif args.playeractivate:
+        players = getPlayers(cur, active=False)
+        kwds = ("enable", "inactive")
+        activate = True
+    elif args.playerdeactivate:
+        players = getPlayers(cur, active=True)
+        kwds = ("disable", "active")
+        activate = False
     elif args.enableexpansion:
         expans = getExpans(cur, active=False)
         kwds = ("enable", "inactive")
@@ -334,6 +408,7 @@ def main():
         kwds = ("disable", "active")
         activate = False
 
+    # handle expansion toggling
     if args.enableexpansion or args.disableexpansion:
         expnumlist = []
         for expan in expans:
@@ -346,7 +421,6 @@ def main():
         except (EOFError, KeyboardInterrupt):
             conn.close()
             sys.exit()
-        #TODO actually update the expansions
         try:
             toggleexp = int(toggleexp)
         except:
@@ -356,6 +430,29 @@ def main():
             sys.stderr.write("Error: invalid input. Please enter a number from the list next time.\n")
             sys.exit()
         toggleExpan(cur, toggleexp, activate=activate)
+
+    # handle player toggling
+    if args.playeractivate or args.playerdeactivate:
+        playernumlist = []
+        for player in players:
+            playernumlist.append(int(player[0]))
+            sys.stdout.write("{0:1.0f}) ".format(player[0]) + player[1] + "\n")
+        try:
+            toggleplayer = input("Please enter the " + kwds[1] + ' player to ' + kwds[0] + ': ')
+            if not list:
+                sys.stderr.write("No player specified. Exiting.\n")
+        except (EOFError, KeyboardInterrupt):
+            conn.close()
+            sys.exit()
+        try:
+            toggleplayer = int(toggleplayer)
+        except:
+            sys.stderr.write("Error: invalid input. Please enter a number from the list next time.\n")
+            sys.exit()
+        if toggleplayer not in playernumlist:
+            sys.stderr.write("Error: invalid input. Please enter a number from the list next time.\n")
+            sys.exit()
+        togglePlayer(cur, toggleplayer, activate=activate)
 
     conn.commit()
     conn.close()
